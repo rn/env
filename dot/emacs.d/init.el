@@ -230,6 +230,9 @@
         (add-to-list 'minor-mode-map-alist mykeys)))
   )
 
+(require 'diminish)
+(diminish 'my-keys-minor-mode)
+
 
 (load custom-file)
 ;;
