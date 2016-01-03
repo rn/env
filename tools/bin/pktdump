@@ -1,0 +1,213 @@
+#! /usr/bin/env python
+##
+## Copyright 2014-2016 Rolf Neugebauer
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## you may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+##
+## tcpdump is all good and dandy but it is a little archaic when it
+## comes to printing the packet contents.  This little utility prints
+## packet dumps in different formats including pure hexdumps, using
+## scapy.
+##
+## This is work in progress.  More functionality will be added over time.
+##
+## TODO:
+## - dynamically adjust the verbosity level (using '+', '-' while running)
+## - keep the last n packets and and optionally write them to a file
+
+"""A handy replacement for tcpdump using the power of scapy"""
+
+# Stop scapy warnings about v6 default routes
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+
+import sys
+import socket
+import time
+import signal
+import errno
+import textwrap
+from scapy.all import conf, sniff, rdpcap, hexdump, Ether, IP, UDP, TCP, GRE
+from optparse import OptionParser
+
+# Verbosity level
+VLVL = 0
+# Print hexdump
+HEXDUMP = False
+# Check the checksums
+CHECK_CSUM = False
+
+# for pretty printing
+TW = textwrap.TextWrapper(subsequent_indent="  ")
+
+
+def csum_ok(pkt):
+    """Check checksums in the packet.
+
+    returns True if checksums are correct. If checksums are not OK,
+    provide a details about the checksums in a string.
+    """
+
+    res = ""
+
+    # Copy the packet, wipe the csum and turning it to a string will
+    # cause scapy to calculate the csum. Then it's just a question to
+    # compare strings.
+    tmp = pkt.copy()
+
+    if IP in tmp:
+        tmp[IP].chksum = None
+    if UDP in tmp:
+        tmp[UDP].chksum = None
+    if TCP in tmp:
+        tmp[TCP].chksum = None
+
+    tmp_str = str(tmp)
+
+    if tmp_str == str(pkt):
+        return True, res
+
+    if Ether in tmp:
+        p = Ether(tmp_str)
+
+        if IP in p:
+            if not p[IP].chksum == pkt[IP].chksum:
+                res += "[IP 0x%x != 0x%x]" % (p[IP].chksum, pkt[IP].chksum)
+        if UDP in p:
+            if not p[UDP].chksum == pkt[UDP].chksum:
+                res += "[UDP 0x%x != 0x%x]" % (p[UDP].chksum, pkt[UDP].chksum)
+        if TCP in p:
+            if not p[TCP].chksum == pkt[TCP].chksum:
+                res = "[TCP 0x%x != 0x%x]" % (p[TCP].chksum, pkt[TCP].chksum)
+    return False, res
+
+
+def print_pkt(pkt):
+    """Main printing functions.
+
+    Prints packet content based on verbosity level
+    """
+    if GRE in pkt:
+        tmp = pkt.copy()
+        inner_raw = tmp.payload.payload.payload.copy()
+        inner_pkt = Ether(str(inner_raw))
+    else:
+        inner_pkt = None
+
+    print pkt.summary()
+    if inner_pkt:
+        print "   INNER:", inner_pkt.summary()
+
+    if CHECK_CSUM:
+        ok, details = csum_ok(pkt)
+        if not ok:
+            print "CHECKSUM ERROR: %s" % details
+        if inner_pkt:
+            ok, details = csum_ok(inner_pkt)
+            if not ok:
+                print "   INNER: CHECKSUM ERROR %s" % details
+
+    if HEXDUMP:
+        hexdump(pkt)
+
+    if VLVL == 1:
+        print TW.fill(pkt.__repr__())
+        if inner_pkt:
+            print TW.fill("INNER: %s" % inner_pkt.__repr__())
+
+    elif VLVL > 1:
+        pkt.show()
+        if inner_pkt:
+            print "INNER:"
+            inner_pkt.show()
+
+    if VLVL > 0 or HEXDUMP:
+        print ""
+
+
+def sig_handler():
+    """Signal handler to exit on xtrl-c"""
+    sys.exit(0)
+
+
+def main():
+    """Main function"""
+
+    usage = """usage: %prog [options] [name...]
+
+Print packets received on a network interface or a pcap file very much
+like tcpdump (but better).  Optionally, one may also point it at a
+packet buffer in NFP memory print the packet located there.
+
+The verbosity level controls how much of the packet content is printed:
+0: a one line summary (default)
+1: Abbreviated format of the packet contents
+2: Pretty print of the entire contents (as much as scapy knows about it)
+"""
+    global VLVL, HEXDUMP, CHECK_CSUM
+
+    parser = OptionParser(usage)
+    parser.add_option('-i', '--interface',
+                      action='store', metavar='INTERFACE',
+                      help='interface to sniff')
+    parser.add_option('-r', '--read',
+                      action='store', metavar='FILE',
+                      help='file to read')
+
+    parser.add_option("-n", "--numeric",
+                      action="store_true", dest="numeric", default=False,
+                      help="Don't attempt to translate port numbers")
+    parser.add_option("-c", "--checksum",
+                      action="store_true", dest="checksum", default=False,
+                      help="Check checksums")
+    parser.add_option('-x', '--hex',
+                      action="store_true", dest="hexdump", default=False,
+                      help="Print a hexdump of the packet")
+    parser.add_option('-v', '--verbose',
+                      default=0, action='store', type='int', metavar='LEVEL',
+                      help='set the verbosity level')
+
+    (options, _) = parser.parse_args()
+
+    HEXDUMP = options.hexdump
+    VLVL = options.verbose
+    CHECK_CSUM = options.checksum
+
+    if options.numeric:
+        conf.noenum.add(TCP.sport, TCP.dport, UDP.sport, UDP.dport)
+
+    if options.read:
+        pkts = rdpcap(options.read)
+        for pkt in pkts:
+            print_pkt(pkt)
+        return
+
+    signal.signal(signal.SIGINT, sig_handler)
+
+    while True:
+        try:
+            sniff(iface=options.interface, prn=lambda x: print_pkt(x))
+        except socket.error as e:
+            print "Socket Error: {0} {1}".format(e.errno, e.strerror)
+            if e.errno == errno.ENODEV or e.errno == errno.ENETDOWN:
+                time.sleep(.5)
+            else:
+                raise
+
+    return
+
+if __name__ == '__main__':
+    sys.exit(main())
+
+
+# -*- Python -*-
