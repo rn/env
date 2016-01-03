@@ -65,7 +65,14 @@
 (package-initialize)
 
 ;; ispell
-(setq-default ispell-program-name "/usr/local/bin/aspell")
+(cond
+   ((string-equal system-type "gnu/linux")
+    (setq-default ispell-program-name "/usr/bin/aspell")
+    )
+   ((string-equal system-type "darwin")
+    (setq-default ispell-program-name "/usr/local/bin/aspell")
+    )
+   )
 (setq ispell-dictionary "british")
 
 ;; default save encoding: utf-8
