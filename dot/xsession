@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+#set -v
+#set -x
+
+# Check for home directory
+if [ -d $HOME -a -w $HOME ]
+then
+    exec > $HOME/.xerrs 2>&1
+else
+    echo "Xsession: $HOME directory not writeable by $USER" > /dev/console
+    exec xterm -geometry 80x40+0+0
+fi
+
+xset -dpms
+xset s off
+xset b 100 5000 50
+
+# Swap middle and right button
+xmodmap -e "pointer = 1 3 2"
+
+XRESOURCES=$HOME/.Xresources
+[ -f $XRESOURCES ] && xrdb $XRESOURCES
+
+# Set the backgound to black
+xsetroot -solid Black &
+
+xconsole -geometry 423x88-92+0 -iconic &
+
+if   [ -x /usr/local/bin/fvwm2 ]; then /usr/local/bin/fvwm2 &
+elif [ -x /usr/bin/fvwm2 ];       then  /usr/bin/fvwm2 &
+else twm &
+fi
+
+vmware-user
+
+xterm -g 40x20+502+42 -title "EXIT" -n EXIT -iconic

@@ -1,0 +1,49 @@
+[user]
+    name = Rolf Neugebauer
+    email = rolf.neugebauer@gmail.com
+
+[alias]
+    whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
+    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+    st = status
+    rev = rev-parse HEAD
+    ci = commit
+    br = branch -avv
+    co = checkout
+    df = diff --word-diff=color
+    dfw = diff -R --color
+    l = log --all --decorate=full
+    lg = log --all --graph --decorate=full --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
+    llg = log --all --color-words --graph --decorate=full --stat
+    ldiff = log --all -p --decorate=full --word-diff=color
+    timeline = log --oneline --decorate --graph
+    human = "name-rev --refs=refs/heads/* --stdin"
+    who = shortlog -s --
+    patdiff = difftool -y -x patdiff
+
+[color]
+    ui = true
+    diff = true
+
+[core]
+    pager = less -+$LESS -FRXi
+    autocrlf = input
+    whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
+
+[push]
+    default = tracking
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    renames = true
+
+[sendemail]
+    from = Rolf Neugebauer <rolf.neugebauer@gmail.com>
+    smtpserver = smtp.gmail.com
+    smtpuser = rolf.neugebauer@gmail.com
+    smtpencryption = tls
+    chainreplyto = false
+    smtpserverport = 587
+

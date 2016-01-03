@@ -1,0 +1,41 @@
+[ui]
+username= Rolf Neugebauer <rolf.neugebauer@gmail.com>
+
+[extensions]
+hgk=
+hgext.mq= 
+hgext.extdiff=
+hgext.convert=
+hgext.churn=
+rebase=
+transplant=
+hgext.hgview=
+hgext.patchbomb =
+
+[diff]
+showfunc=True
+
+[email]
+method=smtp
+from=Rolf Neugebauer <rolf.neugebauer@gmail.com>
+cc=rolf.neugebauer@gmail.com
+
+[smtp]
+host=smtp.gmail.com
+username=rolf.neugebauer@gmail.com
+port=587
+tls=true
+
+[extdiff]
+cmd.vdiff= meld
+
+[alias]
+qstatus = status --rev -2:.
+
+[hgk]
+vdiff=vdiff
+
+[hgview]
+interface=qt
+font="Monospace,10,-1,5,50,0,0,0,0,0"
+fontsize=10

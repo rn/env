@@ -1,0 +1,68 @@
+!
+! .Xdefaults for reading with xrdb
+!
+! by Rolf Neugebauer
+!
+
+! XTerm settings
+*customization:             -color
+XTerm*scrollBar:            true
+XTerm*font:                 6x13
+!XTerm*reverseVideo:        true
+XTerm*foreground:           white
+XTerm*background:           black
+XTerm*internalBorder:       2
+XTerm*saveLines:            2000
+XTerm*VT100.reverseWrap:    true
+XTerm*VT100.geometry:       80x24
+XTerm*eightBitInput:        false
+XTerm*termName:             xterm-color
+*VT100*color0:              black
+*VT100*color1:              red3
+*VT100*color2:              green3
+*VT100*color3:              yellow3
+*VT100*color4:              blue3
+*VT100*color5:              magenta3
+*VT100*color6:              cyan3
+*VT100*color7:              gray90
+*VT100*color8:              gray30
+*VT100*color9:              #ff5452
+*VT100*color10:             #00a900
+*VT100*color11:             yellow
+*VT100*color12:             #5254ff
+*VT100*color13:             magenta
+*VT100*color14:             cyan
+*VT100*color15:             white
+*VT100*colorUL:             yellow
+*VT100*colorBD:             white
+XTerm*charClass:            33:48,37:48,45-47:48,64:48
+
+! Emacs settings
+emacs.font:                 6x13
+emacs*menubar*font:         -*-fixed-medium-r-*-*-12-*-*-*-*-*-*-*
+emacs*popup*font:           -*-fixed-medium-r-*-*-12-*-*-*-*-*-*-*
+Minibuffer.font:            6x13
+FRNoTitle.font:             6x13
+FRNoTitle*menubar*font:     -*-fixed-medium-r-*-*-12-*-*-*-*-*-*-*
+FRNoTitle*popup*font:       -*-fixed-medium-r-*-*-12-*-*-*-*-*-*-*
+emacs.geometry:             80x24
+emacs.pointerColor:         red
+Minibuffer.pointerColor:    red
+FRNoTitle.pointerColor:     red
+emacs*Foreground:           white
+Minibuffer*Foreground:      white
+FRNoTitle*Foreground:       white
+emacs*Background:           black
+Minibuffer*Background:      black
+FRNoTitle*Background:       black
+emacs.toolBar:              off
+
+! XLoad
+XLoad*font:                 6x10
+XLoad*Foreground:           grey
+XLoad*Background:           black
+
+!xpdf
+!xpdf.geometry:             1185x1000
+xpdf.freeTypeControl:       aa
+xpdf.t1libControl:          high

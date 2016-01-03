@@ -1,0 +1,76 @@
+# -*- mode: sh -*-
+
+# include aliases and functions
+[ -r ~/.bash_fns ] && source ~/.bash_fns
+
+
+# general settings
+shopt -s checkwinsize    # Handle window resize
+shopt -s extglob         # enable extra glob patterns
+set -o notify
+set -o physical
+
+# Work out where we are
+LHOST=$(uname -n)
+SHOST=${LHOST%%.*}
+OSNAME=$(uname -s)
+OSKERNEL=$(uname -r)
+export LHOST SHOST OSNAME OSKERNEL
+
+# Editor and Pager
+EDITOR=vi
+PAGER="less -FRXi"
+MANPAGER="less -FRXi"
+export PAGER MANPAGER
+
+# Prompt
+# Short host name only and update with the last 20 characters of PWD
+PS1SHOST=$SHOST
+export PS1SHOST
+cd () {
+    builtin cd "$@"
+    PS1="\h:`echo $PWD | tail -20c`: "
+}
+
+# Add an element to the end of an environment variable
+addenv () {
+    eval ${1}=$(echo $(eval echo "$\{$1\}")):"$2"
+    export ${1}
+}
+
+# Build path from scratch
+unset PATH
+addenv PATH /sbin
+addenv PATH /bin
+addenv PATH /usr/sbin
+addenv PATH /usr/bin
+addenv PATH ~/tools/bin
+addenv PATH /usr/local/sbin
+addenv PATH /usr/local/bin
+
+# Build manpath
+unset MANPATH
+addenv MANPATH /usr/share/man
+addenv MANPATH ~/tools/man
+addenv MANPATH /usr/local/man
+
+
+# Aliases
+alias ls='ls -F'
+alias ll='ls -l'
+alias la='ls -al'
+alias lm='ls -al | more'
+
+alias psg='ps -aux | grep \!* | grep -v grep'
+
+
+# History
+command_oriented_history=TRUE
+shopt -s histappend
+export HISTIGNORE="&:l[sl][a]:[bf]g:exit:[ \t]"
+export HISTCONTROL=ignoreboth:erasedups
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+
+# final cd to set the prompt
+cd
