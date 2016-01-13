@@ -1,6 +1,6 @@
 ;;; markdown-mode.el --- Emacs Major mode for Markdown-formatted text files
 
-;; Copyright (C) 2007-2015 Jason R. Blevins <jrblevin@sdf.org>
+;; Copyright (C) 2007-2016 Jason R. Blevins <jrblevin@sdf.org>
 ;; Copyright (C) 2007, 2009 Edward O'Connor <ted@oconnor.cx>
 ;; Copyright (C) 2007 Conal Elliott <conal@conal.net>
 ;; Copyright (C) 2008 Greg Bognar <greg_bognar@hms.harvard.edu>
@@ -25,13 +25,15 @@
 ;; Copyright (C) 2015 Google, Inc. (Contributor: Samuel Freilich <sfreilich@google.com>)
 ;; Copyright (C) 2015 Antonis Kanouras <antonis@metadosis.gr>
 ;; Copyright (C) 2015 Howard Melman <hmelman@gmail.com>
-;; Copyright (C) 2015 Danny McClanahan <danieldmcclanahan@gmail.com>
+;; Copyright (C) 2015-2016 Danny McClanahan <danieldmcclanahan@gmail.com>
+;; Copyright (C) 2015-2016 Syohei Yoshida <syohex@gmail.com>
 
 ;; Author: Jason R. Blevins <jrblevin@sdf.org>
 ;; Maintainer: Jason R. Blevins <jrblevin@sdf.org>
 ;; Created: May 24, 2007
-;; Version: 2.0
-;; Package-Version: 20160102.429
+;; Version: 2.1
+;; Package-Version: 20160111.648
+;; Package-Requires: ((cl-lib "0.5"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: http://jblevins.org/projects/markdown-mode/
 
@@ -60,15 +62,15 @@
 ;;
 ;;  [Markdown]: http://daringfireball.net/projects/markdown/
 ;;
-;; The latest stable version is markdown-mode 2.0, released on March 24, 2013:
+;; The latest stable version is markdown-mode 2.1, released on January 9, 2016:
 ;;
 ;;    * [markdown-mode.el][]
 ;;    * [Screenshot][][^theme]
 ;;    * [Release notes][]
 ;;
 ;;  [markdown-mode.el]: http://jblevins.org/projects/markdown-mode/markdown-mode.el
-;;  [Screenshot]: http://jblevins.org/projects/markdown-mode/screenshots/20130131-002.png
-;;  [Release notes]: http://jblevins.org/projects/markdown-mode/rev-2-0
+;;  [Screenshot]: http://jblevins.org/projects/markdown-mode/screenshots/20160108-001.png
+;;  [Release notes]: http://jblevins.org/projects/markdown-mode/rev-2-1
 ;;
 ;; [^theme]: The theme used in the screenshot is
 ;;     [color-theme-twilight](https://github.com/crafterm/twilight-emacs).
@@ -89,19 +91,19 @@
 ;;
 ;; markdown-mode is also available in several package managers, including:
 ;;
-;;    * Debian Linux: [emacs-goodies-el][]
-;;    * Ubuntu Linux: [emacs-goodies-el][emacs-goodies-el-ubuntu]
+;;    * Debian Linux: [elpa-markdown-mode][] and [emacs-goodies-el][]
+;;    * Ubuntu Linux: [elpa-markdown-mode][elpa-ubuntu] and [emacs-goodies-el][emacs-goodies-el-ubuntu]
 ;;    * RedHat and Fedora Linux: [emacs-goodies][]
 ;;    * NetBSD: [textproc/markdown-mode][]
-;;    * Arch Linux (AUR): [emacs-markdown-mode-git][]
 ;;    * MacPorts: [markdown-mode.el][macports-package] ([pending][macports-ticket])
 ;;    * FreeBSD: [textproc/markdown-mode.el][freebsd-port]
 ;;
+;;  [elpa-markdown-mode]: https://packages.debian.org/sid/lisp/elpa-markdown-mode
+;;  [elpa-ubuntu]: http://packages.ubuntu.com/search?keywords=elpa-markdown-mode
 ;;  [emacs-goodies-el]: http://packages.debian.org/emacs-goodies-el
 ;;  [emacs-goodies-el-ubuntu]: http://packages.ubuntu.com/search?keywords=emacs-goodies-el
 ;;  [emacs-goodies]: https://apps.fedoraproject.org/packages/emacs-goodies
 ;;  [textproc/markdown-mode]: http://pkgsrc.se/textproc/markdown-mode
-;;  [emacs-markdown-mode-git]: https://aur.archlinux.org/packages/emacs-goodies-el/
 ;;  [macports-package]: https://trac.macports.org/browser/trunk/dports/editors/markdown-mode.el/Portfile
 ;;  [macports-ticket]: http://trac.macports.org/ticket/35716
 ;;  [freebsd-port]: http://svnweb.freebsd.org/ports/head/textproc/markdown-mode.el
@@ -121,6 +123,10 @@
 ;; There is no official Markdown file extension, nor is there even a
 ;; _de facto_ standard, so you can easily add, change, or remove any
 ;; of the file extensions above as needed.
+;;
+;; `markdown-mode' depends on `cl-lib', which has been bundled with
+;; GNU Emacs since 24.3.  Users of GNU Emacs 24.1 and 24.2 can install
+;; `cl-lib' with `package.el'.
 
 ;;; Usage:
 
@@ -495,10 +501,12 @@
 ;;     demotion, keep these sorted from largest to smallest.
 ;;
 ;;   * `markdown-bold-underscore' - set to a non-nil value to use two
-;;     underscores for bold instead of two asterisks (default: `nil').
+;;     underscores when inserting bold text instead of two asterisks
+;;     (default: `nil').
 ;;
 ;;   * `markdown-italic-underscore' - set to a non-nil value to use
-;;     underscores for italic instead of asterisks (default: `nil').
+;;     underscores when inserting italic text instead of asterisks
+;;     (default: `nil').
 ;;
 ;;   * `markdown-asymmetric-header' - set to a non-nil value to use
 ;;     asymmetric header styling, placing header characters only on
@@ -579,6 +587,17 @@
 ;;     for the actual content of the document to be filled.  Making
 ;;     this variable buffer-local allows `markdown-mode' to override
 ;;     the default behavior induced when the global variable is non-nil.
+;;
+;;   * `markdown-gfm-additional-languages', - additional languages to
+;;     make available, aside from those predefined in
+;;     `markdown-gfm-recognized-languages', when inserting GFM code
+;;     blocks (default: `nil`). Language strings must have be trimmed
+;;     of whitespace and not contain any curly braces. They may be of
+;;     arbitrary capitalization, though.
+;;
+;;   * `markdown-gfm-use-electric-backquote' - use
+;;     `markdown-electric-backquote' for interactive insertion of GFM
+;;     code blocks when backquote is pressed three times (default: `t`).
 ;;
 ;;   * `markdown-make-gfm-checkboxes-buttons' - Whether GitHub
 ;;     Flavored Markdown style task lists (checkboxes) should be
@@ -796,18 +815,17 @@
 ;;     a monetary contribution in June 2015.
 ;;   * Howard Melman <hmelman@gmail.com> for supporting GFM checkboxes
 ;;     as buttons.
-;;   * Danny McClanahan <danieldmcclanahan@gmail.com> for live preview mode.
+;;   * Danny McClanahan <danieldmcclanahan@gmail.com> for live preview mode,
+;;     completion of GFM programming language names, and `cl-lib' updates.
 ;;   * Syohei Yoshida <syohex@gmail.com> for better heading detection
-;;     and movement functions.
+;;     and movement functions, improved italic font lock.
 
 ;;; Bugs:
 
-;; Although markdown-mode is developed and tested primarily using
-;; GNU Emacs 24, compatibility with earlier Emacsen is also a
-;; priority.
-;;
-;; If you find any bugs in markdown-mode, please construct a test case
-;; or a patch and open a ticket on the [GitHub issue tracker][issues].
+;; markdown-mode is developed and tested primarily for compatibility
+;; with GNU Emacs 24.3 and later.  If you find any bugs in
+;; markdown-mode, please construct a test case or a patch and open a
+;; ticket on the [GitHub issue tracker][issues].
 ;;
 ;;  [issues]: https://github.com/jrblevin/markdown-mode/issues
 
@@ -827,6 +845,7 @@
 ;;   * 2011-08-15: [Version 1.8.1][]
 ;;   * 2013-01-25: [Version 1.9][]
 ;;   * 2013-03-24: [Version 2.0][]
+;;   * 2016-01-09: [Version 2.1][]
 ;;
 ;; [Version 1.3]: http://jblevins.org/projects/markdown-mode/rev-1-3
 ;; [Version 1.5]: http://jblevins.org/projects/markdown-mode/rev-1-5
@@ -836,6 +855,7 @@
 ;; [Version 1.8.1]: http://jblevins.org/projects/markdown-mode/rev-1-8-1
 ;; [Version 1.9]: http://jblevins.org/projects/markdown-mode/rev-1-9
 ;; [Version 2.0]: http://jblevins.org/projects/markdown-mode/rev-2-0
+;; [Version 2.1]: http://jblevins.org/projects/markdown-mode/rev-2-1
 
 
 ;;; Code:
@@ -843,14 +863,14 @@
 (require 'easymenu)
 (require 'outline)
 (require 'thingatpt)
-(eval-when-compile (require 'cl))
+(require 'cl-lib)
 
 (declare-function eww-open-file "eww")
 
 
 ;;; Constants =================================================================
 
-(defconst markdown-mode-version "2.0"
+(defconst markdown-mode-version "2.1"
   "Markdown mode version number.")
 
 (defconst markdown-output-buffer-name "*markdown-output*"
@@ -864,6 +884,9 @@
 
 (defvar markdown-live-preview-mode nil
   "Sentinel variable for `markdown-live-preview-mode'.")
+
+(defvar markdown-gfm-language-history nil
+  "History list of languages used in the current buffer in GFM code blocks.")
 
 
 ;;; Customizable Variables ====================================================
@@ -923,12 +946,12 @@ promotion and demotion functions."
   :type 'list)
 
 (defcustom markdown-bold-underscore nil
-  "Use two underscores for bold instead of two asterisks."
+  "Use two underscores when inserting bold text instead of two asterisks."
   :group 'markdown
   :type 'boolean)
 
 (defcustom markdown-italic-underscore nil
-  "Use underscores for italic instead of asterisks."
+  "Use underscores when inserting italic text instead of asterisks."
   :group 'markdown
   :type 'boolean)
 
@@ -1066,6 +1089,24 @@ and `markdown-promote-list-item'."
   :group 'markdown
   :type 'integer)
 
+(defcustom markdown-gfm-additional-languages nil
+  "Additional languages to make available when inserting GFM code
+blocks. Language strings must have be trimmed of whitespace and not contain any
+curly braces. They may be of arbitrary capitalization, though."
+  :group 'markdown
+  :type '(repeat (string :validate markdown-validate-language-string)))
+
+(defcustom markdown-gfm-use-electric-backquote t
+  "Use `markdown-electric-backquote' when backquote is hit three times."
+  :group 'markdown
+  :type 'boolean)
+
+(defcustom markdown-gfm-downcase-languages t
+  "Downcase suggested languages when inserting them to code blocks with
+`markdown-electric-backquote'."
+  :group 'markdown
+  :type 'boolean)
+
 
 ;;; Regular Expressions =======================================================
 
@@ -1119,7 +1160,14 @@ Group 3 matches the closing square bracket.")
 
 (defconst markdown-regex-header
   "^\\(?:\\(.+\\)\n\\(=+\\)\\|\\(.+\\)\n\\(-+\\)\\|\\(#+\\)\\s-*\\(.*?\\)\\s-*?\\(#*\\)\\)$"
-  "Regexp identifying Markdown headers.")
+  "Regexp identifying Markdown headings.
+Group 1 matches the text of a level-1 setext heading.
+Group 2 matches the underline of a level-1 setext heading.
+Group 3 matches the text of a level-1 setext heading.
+Group 4 matches the underline of a level-1 setext heading.
+Group 5 matches the opening hash marks of an atx heading.
+Group 6 matches the text, without surrounding whitespace, of an atx heading.
+Group 7 matches the closing hash marks of an atx heading.")
 
 (defconst markdown-regex-header-1-atx
   "^\\(#\\)[ \t]*\\([^\\.].*?\\)[ \t]*\\(#*\\)$"
@@ -1187,16 +1235,16 @@ but not two newlines in a row.")
 Groups 1 and 3 match the opening and closing tags.
 Group 2 matches the key sequence.")
 
-(defconst markdown-regex-gfm-code-block-open
- "^\\s *\\(```\\)[ ]?\\([^[:space:]]+[[:space:]]*\\|{[^}]*}\\)?$"
+(defconst markdown-regex-gfm-code-block
+  (concat
+   "^\\s *\\(```\\)[ ]*\\([^[:space:]]+\\|{[^}]*}\\)?"
+   "[[:space:]]*?\n"
+   "\\(\\(?:.\\|\n\\)*?\\)?"
+   "\n?\\s *?\\(```\\)\\s *?$")
  "Regular expression matching opening of GFM code blocks.
 Group 1 matches the opening three backticks.
-Group 2 matches the language identifier (optional).")
-
-(defconst markdown-regex-gfm-code-block-close
- "^\\s *\\(```\\)\\s *$"
- "Regular expression matching closing of GFM code blocks.
-Group 1 matches the closing three backticks.")
+Group 2 matches the language identifier (optional).
+Group 3 matches the closing three backticks.")
 
 (defconst markdown-regex-pre
   "^\\(    \\|\t\\).*$"
@@ -1409,18 +1457,14 @@ Function is called repeatedly until it returns nil. For details, see
   "Match GFM code blocks from START to END."
   (save-excursion
     (goto-char start)
-    (while (re-search-forward markdown-regex-gfm-code-block-open end t)
+    (while (re-search-forward markdown-regex-gfm-code-block end t)
       (let ((open (list (match-beginning 1) (match-end 1)))
-            (lang (list (match-beginning 2) (match-end 2))))
-        (forward-line)
-        (let ((body (point)))
-          (when (re-search-forward
-                 markdown-regex-gfm-code-block-close end t)
-            (let ((close (list (match-beginning 1) (match-end 1)))
-                  (all (list (car open) (match-end 1))))
-              (setq body (list body (1- (match-beginning 0))))
-              (put-text-property (car open) (match-end 1) 'markdown-gfm-code
-                                 (append all open lang body close)))))))))
+            (lang (list (match-beginning 2) (match-end 2)))
+            (body (list (match-beginning 3) (match-end 3)))
+            (close (list (match-beginning 4) (match-end 4)))
+            (all (list (match-beginning 1) (match-end 4))))
+        (put-text-property (cl-first open) (cl-second close) 'markdown-gfm-code
+                           (append all open lang body close))))))
 
 (defun markdown-syntax-propertize-blockquotes (start end)
   "Match blockquotes from START to END."
@@ -2414,6 +2458,7 @@ Return nil otherwise."
          ((markdown-range-property-any
            begin end 'face (list markdown-inline-code-face
                                  markdown-bold-face
+                                 markdown-list-face
                                  markdown-math-face))
           (goto-char (1+ (match-end 0)))
           (markdown-match-italic last))
@@ -3009,17 +3054,18 @@ header text is determined."
   (interactive "*P")
   (let (level)
     (save-excursion
-      (when (re-search-backward markdown-regex-header nil t)
-        ;; level of previous header
+      (when (or (thing-at-point-looking-at markdown-regex-header)
+                (re-search-backward markdown-regex-header nil t))
+        ;; level of current or previous header
         (setq level (markdown-outline-level))
-        ;; match groups 1 and 2 indicate setext headers
+        ;; match groups 1 and 3 indicate setext headers
         (setq setext (or setext (match-end 1) (match-end 3)))))
     ;; check prefix argument
     (cond
-     ((and (equal arg '(4)) (> level 1)) ;; C-u
-      (decf level))
-     ((and (equal arg '(16)) (< level 6)) ;; C-u C-u
-      (incf level))
+     ((and (equal arg '(4)) level (> level 1)) ;; C-u
+      (cl-decf level))
+     ((and (equal arg '(16)) level (< level 6)) ;; C-u C-u
+      (cl-incf level))
      (arg ;; numeric prefix
       (setq level (prefix-numeric-value arg))))
     ;; setext headers must be level one or two
@@ -3172,9 +3218,96 @@ Call `markdown-insert-gfm-code-block' interactively
 if three backquotes inserted at the beginning of line."
   (interactive "*P")
   (self-insert-command (prefix-numeric-value arg))
-  (when (looking-back "^```" nil)
+  (when (and markdown-gfm-use-electric-backquote (looking-back "^```" nil))
     (replace-match "")
     (call-interactively #'markdown-insert-gfm-code-block)))
+
+(defconst markdown-gfm-recognized-languages
+  ;; to reproduce/update, evaluate the let-form in
+  ;; scripts/get-recognized-gfm-languages.el. that produces a single long sexp,
+  ;; but with appropriate use of a keyboard macro, indenting and filling it
+  ;; properly is pretty fast.
+  '("ABAP" "AMPL" "ANTLR" "APL" "ASP" "ATS" "ActionScript" "Ada" "Agda" "Alloy"
+    "ApacheConf" "Apex" "AppleScript" "Arc" "Arduino" "AsciiDoc" "AspectJ"
+    "Assembly" "Augeas" "AutoHotkey" "AutoIt" "Awk" "Batchfile" "Befunge"
+    "Bison" "BitBake" "BlitzBasic" "BlitzMax" "Bluespec" "Boo" "Brainfuck"
+    "Brightscript" "Bro" "C" "C++" "C-ObjDump" "CLIPS" "CMake" "COBOL" "CSS"
+    "CartoCSS" "Ceylon" "Chapel" "Charity" "ChucK" "Cirru" "Clarion" "Clean"
+    "Click" "Clojure" "CoffeeScript" "ColdFusion" "Cool" "Coq" "Cpp-ObjDump"
+    "Creole" "Crystal" "Cucumber" "Cuda" "Cycript" "Cython" "D" "D-ObjDump" "DM"
+    "DTrace" "Dart" "Diff" "Dockerfile" "Dogescript" "Dylan" "E" "ECL" "ECLiPSe"
+    "Eagle" "Eiffel" "Elixir" "Elm" "EmberScript" "Erlang" "FLUX" "FORTRAN"
+    "Factor" "Fancy" "Fantom" "Filterscript" "Formatted" "Forth" "FreeMarker"
+    "Frege" "G-code" "GAMS" "GAP" "GAS" "GDScript" "GLSL" "Genshi" "Glyph"
+    "Gnuplot" "Go" "Golo" "Gosu" "Grace" "Gradle" "Groff" "Groovy" "HCL" "HTML"
+    "HTML+Django" "HTML+EEX" "HTML+ERB" "HTML+PHP" "HTTP" "Hack" "Haml"
+    "Handlebars" "Harbour" "Haskell" "Haxe" "Hy" "HyPhy" "IDL" "INI" "Idris"
+    "Io" "Ioke" "Isabelle" "J" "JFlex" "JSON" "JSON5" "JSONLD" "JSONiq" "JSX"
+    "Jade" "Jasmin" "Java" "JavaScript" "Julia" "KRL" "KiCad" "Kit" "Kotlin"
+    "LFE" "LLVM" "LOLCODE" "LSL" "LabVIEW" "Lasso" "Latte" "Lean" "Less" "Lex"
+    "LilyPond" "Limbo" "Liquid" "LiveScript" "Logos" "Logtalk" "LookML"
+    "LoomScript" "Lua" "M" "MAXScript" "MTML" "MUF" "Makefile" "Mako" "Markdown"
+    "Mask" "Mathematica" "Matlab" "Max" "MediaWiki" "Mercury" "Metal" "MiniD"
+    "Mirah" "Modelica" "Modula-2" "Monkey" "Moocode" "MoonScript" "Myghty" "NCL"
+    "NL" "NSIS" "Nemerle" "NetLinx" "NetLinx+ERB" "NetLogo" "NewLisp" "Nginx"
+    "Nimrod" "Ninja" "Nit" "Nix" "Nu" "NumPy" "OCaml" "ObjDump" "Objective-C"
+    "Objective-C++" "Objective-J" "Omgrofl" "Opa" "Opal" "OpenCL" "OpenSCAD"
+    "Org" "Ox" "Oxygene" "Oz" "PAWN" "PHP" "PLSQL" "PLpgSQL" "Pan" "Papyrus"
+    "Parrot" "Pascal" "Perl" "Perl6" "Pickle" "PicoLisp" "PigLatin" "Pike" "Pod"
+    "PogoScript" "Pony" "PostScript" "PowerShell" "Processing" "Prolog" "Puppet"
+    "PureBasic" "PureScript" "Python" "QML" "QMake" "R" "RAML" "RDoc"
+    "REALbasic" "RHTML" "RMarkdown" "Racket" "Rebol" "Red" "Redcode" "Ren'Py"
+    "RenderScript" "RobotFramework" "Rouge" "Ruby" "Rust" "SAS" "SCSS" "SMT"
+    "SPARQL" "SQF" "SQL" "SQLPL" "STON" "SVG" "Sage" "SaltStack" "Sass" "Scala"
+    "Scaml" "Scheme" "Scilab" "Self" "Shell" "ShellSession" "Shen" "Slash"
+    "Slim" "Smali" "Smalltalk" "Smarty" "SourcePawn" "Squirrel" "Stan" "Stata"
+    "Stylus" "SuperCollider" "Swift" "SystemVerilog" "TOML" "TXL" "Tcl" "Tcsh"
+    "TeX" "Tea" "Text" "Textile" "Thrift" "Turing" "Turtle" "Twig" "TypeScript"
+    "UnrealScript" "UrWeb" "VCL" "VHDL" "Vala" "Verilog" "VimL" "Volt" "Vue"
+    "WebIDL" "X10" "XC" "XML" "XPages" "XProc" "XQuery" "XS" "XSLT" "Xojo"
+    "Xtend" "YAML" "Yacc" "Zephir" "Zimpl" "desktop" "eC" "edn" "fish" "mupad"
+    "nesC" "ooc" "reStructuredText" "wisp" "xBase")
+  "Language specifiers recognized by github's syntax highlighting features.")
+
+(defvar markdown-gfm-used-languages nil
+  "Languages used in the current buffer in GFM code blocks, which are not
+already in `markdown-gfm-recognized-languages' or
+`markdown-gfm-additional-languages'.")
+(make-variable-buffer-local 'markdown-gfm-used-languages)
+(defvar markdown-gfm-last-used-language nil
+  "Last language used in the current buffer in GFM code blocks.")
+(make-variable-buffer-local 'markdown-gfm-last-used-language)
+
+(defun markdown-trim-whitespace (str)
+  (markdown-replace-regexp-in-string
+   "\\(?:[[:space:]\r\n]+\\'\\|\\`[[:space:]\r\n]+\\)" "" str))
+
+(defun markdown-clean-language-string (str)
+  (markdown-replace-regexp-in-string
+   "{\\.?\\|}" "" (markdown-trim-whitespace str)))
+
+(defun markdown-validate-language-string (widget)
+  (let ((str (widget-value widget)))
+    (unless (string= str (markdown-clean-language-string str))
+      (widget-put widget :error (format "Invalid language spec: '%s'" str))
+      widget)))
+
+(defun markdown-gfm-get-corpus ()
+  "Create corpus of recognized GFM code block languages for the given buffer."
+  (let ((given-corpus (append markdown-gfm-additional-languages
+                              markdown-gfm-recognized-languages)))
+    (append
+     markdown-gfm-used-languages
+     (if markdown-gfm-downcase-languages (cl-mapcar #'downcase given-corpus)
+       given-corpus))))
+
+(defun markdown-add-language-if-new (lang)
+  (let* ((cleaned-lang (markdown-clean-language-string lang))
+         (find-result
+          (cl-find cleaned-lang (markdown-gfm-get-corpus)
+                   :test #'equal)))
+    (setq markdown-gfm-last-used-language cleaned-lang)
+    (unless find-result (push cleaned-lang markdown-gfm-used-languages))))
 
 (defun markdown-insert-gfm-code-block (&optional lang)
   "Insert GFM code block for language LANG.
@@ -3182,7 +3315,18 @@ If LANG is nil, the language will be queried from user.  If a
 region is active, wrap this region with the markup instead.  If
 the region boundaries are not on empty lines, these are added
 automatically in order to have the correct markup."
-  (interactive "sProgramming language [none]: ")
+  (interactive
+   (list (let ((completion-ignore-case nil))
+           (condition-case nil
+               (markdown-clean-language-string
+                (completing-read
+                 (format "Programming language [%s]: "
+                         (or markdown-gfm-last-used-language "none"))
+                 (markdown-gfm-get-corpus)
+                 nil 'confirm nil
+                 'markdown-gfm-language-history))
+             (quit "")))))
+  (unless (string= lang "") (markdown-add-language-if-new lang))
   (when (> (length lang) 0) (setq lang (concat " " lang)))
   (if (markdown-use-region-p)
       (let ((b (region-beginning)) (e (region-end)))
@@ -3202,11 +3346,17 @@ automatically in order to have the correct markup."
         (markdown-ensure-blank-line-before)
         (insert "```" lang))
     (markdown-ensure-blank-line-before)
-    (insert "```" lang)
-    (newline 2)
-    (insert "```")
+    (insert "```" lang "\n\n```")
     (markdown-ensure-blank-line-after)
     (forward-line -1)))
+
+(defun markdown-gfm-parse-buffer-for-languages (&optional buffer)
+  (with-current-buffer (or buffer (current-buffer))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward markdown-regex-gfm-code-block nil t)
+        (let ((lang (match-string-no-properties 2)))
+          (when lang (markdown-add-language-if-new lang)))))))
 
 
 ;;; Footnotes ======================================================================
@@ -3221,7 +3371,7 @@ automatically in order to have the correct markup."
         (let ((fn (string-to-number (match-string 1))))
           (when (> fn markdown-footnote-counter)
             (setq markdown-footnote-counter fn))))))
-  (incf markdown-footnote-counter))
+  (cl-incf markdown-footnote-counter))
 
 (defun markdown-insert-footnote ()
   "Insert footnote with a new number and move point to footnote definition."
@@ -3256,7 +3406,7 @@ footnote marker or in the footnote text."
       ;; We're starting in footnote text, so mark our return position and jump
       ;; to the marker if possible.
       (let ((marker-pos (markdown-footnote-find-marker
-                         (first starting-footnote-text-positions))))
+                         (cl-first starting-footnote-text-positions))))
             (if marker-pos
                 (goto-char (1- marker-pos))
               ;; If there isn't a marker, we still want to kill the text.
@@ -3270,10 +3420,10 @@ footnote marker or in the footnote text."
           (error "Not at a footnote"))
         ;; Even if we knew the text position before, it changed when we deleted
         ;; the label.
-        (setq marker-pos (second marker))
-        (let ((new-text-pos (markdown-footnote-find-text (first marker))))
+        (setq marker-pos (cl-second marker))
+        (let ((new-text-pos (markdown-footnote-find-text (cl-first marker))))
           (unless new-text-pos
-            (error "No text for footnote `%s'" (first marker)))
+            (error "No text for footnote `%s'" (cl-first marker)))
           (goto-char new-text-pos))))
     (let ((pos (markdown-footnote-kill-text)))
       (goto-char (if starting-footnote-text-positions
@@ -3287,7 +3437,7 @@ start position of the marker before deletion.  If no footnote
 marker was deleted, this function returns NIL."
   (let ((marker (markdown-footnote-marker-positions)))
     (when marker
-      (delete-region (second marker) (third marker))
+      (delete-region (cl-second marker) (cl-third marker))
       (butlast marker))))
 
 (defun markdown-footnote-kill-text ()
@@ -3299,14 +3449,14 @@ The killed text is placed in the kill ring (without the footnote
 number)."
   (let ((fn (markdown-footnote-text-positions)))
     (when fn
-      (let ((text (delete-and-extract-region (second fn) (third fn))))
-        (string-match (concat "\\[\\" (first fn) "\\]:[[:space:]]*\\(\\(.*\n?\\)*\\)") text)
+      (let ((text (delete-and-extract-region (cl-second fn) (cl-third fn))))
+        (string-match (concat "\\[\\" (cl-first fn) "\\]:[[:space:]]*\\(\\(.*\n?\\)*\\)") text)
         (kill-new (match-string 1 text))
         (when (and (markdown-cur-line-blank-p)
                    (markdown-prev-line-blank-p)
                    (not (bobp)))
           (delete-region (1- (point)) (point)))
-        (second fn)))))
+        (cl-second fn)))))
 
 (defun markdown-footnote-goto-text ()
   "Jump to the text of the footnote at point."
@@ -3477,7 +3627,7 @@ text to kill ring), and list items."
       (delete-region (match-beginning 0) (match-end 0)))
      ;; List item
      ((setq val (markdown-cur-list-item-bounds))
-      (kill-new (delete-and-extract-region (first val) (second val))))
+      (kill-new (delete-and-extract-region (cl-first val) (cl-second val))))
      (t
       (error "Nothing found at point to kill")))))
 
@@ -3875,6 +4025,7 @@ Assumes match data is available for `markdown-regex-italic'."
     (define-key map "\C-c\C-s\C-b" 'markdown-blockquote-region)
     (define-key map "\C-c\C-sp" 'markdown-insert-pre)
     (define-key map "\C-c\C-s\C-p" 'markdown-pre-region)
+    (define-key map "\C-c\C-sP" 'markdown-insert-gfm-code-block)
     (define-key map "\C-c-" 'markdown-insert-hr)
     ;; Element insertion (deprecated)
     (define-key map "\C-c\C-ar" 'markdown-insert-reference-link-dwim)
@@ -3944,7 +4095,6 @@ Assumes match data is available for `markdown-regex-italic'."
 (defvar gfm-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map markdown-mode-map)
-    (define-key map (kbd "C-c C-s P") 'markdown-insert-gfm-code-block)
     (define-key map (kbd "C-c C-s d") 'markdown-insert-strike-through)
     (define-key map "`" 'markdown-electric-backquote)
     map)
@@ -4259,9 +4409,9 @@ as by `markdown-get-undefined-refs'."
   "Insert a button for jumping to LINK in buffer OLDBUF.
 LINK should be a list of the form (text char line) containing
 the link text, location, and line number."
-  (let ((label (first link))
-        (char (second link))
-        (line (third link)))
+  (let ((label (cl-first link))
+        (char (cl-second link))
+        (line (cl-third link)))
     (if (markdown-use-buttons-p)
         ;; Create a reference button in Emacs 22
         (insert-button label
@@ -4726,9 +4876,8 @@ Only visible heading lines are considered, unless INVISIBLE-OK is non-nil."
 
 (defalias 'markdown-end-of-heading 'outline-end-of-heading)
 
-(defun markdown-on-heading-p (&optional invisible-ok)
-  "Return t if point is on a (visible) heading line.
-If INVISIBLE-OK is non-nil, an invisible heading line is ok too."
+(defun markdown-on-heading-p ()
+  "Return t if point is on a (visible) heading line."
   (get-text-property (point) 'markdown-heading))
 
 (defun markdown-end-of-subtree (&optional invisible-OK)
@@ -4984,7 +5133,6 @@ Return the name of the output buffer used."
 
       (unless output-buffer-name
         (setq output-buffer-name markdown-output-buffer-name))
-
       (cond
        ;; Handle case when `markdown-command' does not read from stdin
        (markdown-command-needs-filename
@@ -5147,11 +5295,11 @@ buffer. Inverse of `markdown-live-preview-buffer'.")
 
 (defun markdown-live-preview-window-eww (file)
   "A `markdown-live-preview-window-function' for previewing with eww."
-  (if (eval-when-compile (featurep 'eww))
+  (if (require 'eww nil t)
       (progn
         (eww-open-file file)
         (get-buffer "*eww*"))
-    (error "eww is not present on this version of emacs")))
+    (error "eww is not present or not loaded on this version of emacs")))
 
 (defun markdown-live-preview-window-serialize (buf)
   "Get window point and scroll data for all windows displaying BUF if BUF is
@@ -5163,7 +5311,7 @@ non-nil."
 (defun markdown-live-preview-window-deserialize (window-posns)
   "Apply window point and scroll data from WINDOW-POSNS, given by
 `markdown-live-preview-window-serialize'."
-  (destructuring-bind (win pt start) window-posns
+  (cl-destructuring-bind (win pt start) window-posns
     (when (window-live-p win)
       (set-window-buffer win markdown-live-preview-buffer)
       (set-window-point win pt)
@@ -5185,7 +5333,9 @@ the rendered output."
       (let ((output-buffer
              (funcall markdown-live-preview-window-function export-file)))
         (with-current-buffer output-buffer
-          (setq markdown-live-preview-source-buffer cur-buf))
+          (setq markdown-live-preview-source-buffer cur-buf)
+          (add-hook 'kill-buffer-hook
+                    #'markdown-live-preview-remove-on-kill t t))
         (with-current-buffer cur-buf
           (setq markdown-live-preview-buffer output-buffer))))
     (with-current-buffer cur-buf
@@ -5240,6 +5390,15 @@ output buffer in another window."
   (if markdown-live-preview-mode
       (markdown-display-buffer-other-window (markdown-live-preview-export)))
     (markdown-live-preview-mode))
+
+(defun markdown-live-preview-re-export ()
+  (interactive)
+  "If the current buffer is a buffer displaying the exported version of a
+`markdown-live-preview-mode' buffer, call `markdown-live-preview-export' and
+update this buffer's contents."
+  (when markdown-live-preview-source-buffer
+    (with-current-buffer markdown-live-preview-source-buffer
+      (markdown-live-preview-export))))
 
 (defun markdown-open ()
   "Open file for the current buffer with `markdown-open-command'."
@@ -5348,14 +5507,16 @@ and [[test test]] both map to Test-test.ext."
                                 (file-name-extension (buffer-file-name))))))
            (current default))
       (catch 'done
-        (loop
-         (if (or (file-exists-p current)
-                 (not markdown-wiki-link-search-parent-directories))
-             (throw 'done current))
-         (if (string-equal (expand-file-name current)
-                           (concat "/" default))
-             (throw 'done default))
-         (setq current (concat "../" current)))))))
+        (condition-case nil
+            (cl-loop
+             (if (or (not markdown-wiki-link-search-parent-directories)
+                     (file-exists-p current))
+                 (throw 'done current))
+             (if (string-equal (expand-file-name current)
+                               (concat "/" default))
+                 (throw 'done default))
+             (setq current (concat "../" current)))
+          (error default))))))
 
 (defun markdown-follow-wiki-link (name &optional other)
   "Follow the wiki link NAME.
@@ -5385,7 +5546,7 @@ See `markdown-wiki-link-p' and `markdown-follow-wiki-link'."
 
 (defun markdown-unfontify-region-wiki-links (from to)
   "Remove wiki link faces from the region specified by FROM and TO."
-  (interactive "nfrom: \nnto: ")
+  (interactive "*r")
   (remove-text-properties from to '(font-lock-face markdown-link-face))
   (remove-text-properties from to '(font-lock-face markdown-missing-link-face)))
 
@@ -5402,7 +5563,7 @@ and highlight accordingly."
               (file-name
                (markdown-convert-wiki-link-to-filename
                 (markdown-wiki-link-link))))
-          (if (file-exists-p file-name)
+          (if (condition-case nil (file-exists-p file-name) (error nil))
               (markdown-highlight-wiki-link
                highlight-beginning highlight-end markdown-link-face)
             (markdown-highlight-wiki-link
@@ -5424,49 +5585,51 @@ newline after."
     (re-search-forward "\n" nil t)
     (if (not (= (point) to))
         (setq new-to (point)))
-    (values new-from new-to)))
+    (cl-values new-from new-to)))
 
-(defun markdown-check-change-for-wiki-link (from to change)
-  "Check region between FROM and TO for wiki links and re-fontfy as needed.
-Designed to be used with the `after-change-functions' hook.
-CHANGE is the number of bytes of pre-change text replaced by the
-given range."
-  (interactive "nfrom: \nnto: \nnchange: ")
+(defun markdown-check-change-for-wiki-link (from to)
+  "Check region between FROM and TO for wiki links and re-fontify as needed."
+  (interactive "*r")
   (let* ((modified (buffer-modified-p))
          (buffer-undo-list t)
          (inhibit-read-only t)
          (inhibit-point-motion-hooks t)
          deactivate-mark
          buffer-file-truename)
-     (unwind-protect
-         (save-excursion
-           (save-match-data
-             (save-restriction
-               ;; Extend the region to fontify so that it starts
-               ;; and ends at safe places.
-               (multiple-value-bind (new-from new-to)
-                   (markdown-extend-changed-region from to)
-                 (goto-char new-from)
-                 ;; Only refontify when the range contains text with a
-                 ;; wiki link face or if the wiki link regexp matches.
-                 (when (or (markdown-range-property-any
-                            new-from new-to 'font-lock-face
-                            (list markdown-link-face
-                                  markdown-missing-link-face))
-                           (re-search-forward
-                            markdown-regex-wiki-link new-to t))
-                   ;; Unfontify existing fontification (start from scratch)
-                   (markdown-unfontify-region-wiki-links new-from new-to)
-                   ;; Now do the fontification.
-                   (markdown-fontify-region-wiki-links new-from new-to))))))
-       (and (not modified)
-            (buffer-modified-p)
-            (set-buffer-modified-p nil)))))
+    (unwind-protect
+        (save-excursion
+          (save-match-data
+            (save-restriction
+              ;; Extend the region to fontify so that it starts
+              ;; and ends at safe places.
+              (cl-multiple-value-bind (new-from new-to)
+                  (markdown-extend-changed-region from to)
+                (goto-char new-from)
+                ;; Only refontify when the range contains text with a
+                ;; wiki link face or if the wiki link regexp matches.
+                (when (or (markdown-range-property-any
+                           new-from new-to 'font-lock-face
+                           (list markdown-link-face
+                                 markdown-missing-link-face))
+                          (re-search-forward
+                           markdown-regex-wiki-link new-to t))
+                  ;; Unfontify existing fontification (start from scratch)
+                  (markdown-unfontify-region-wiki-links new-from new-to)
+                  ;; Now do the fontification.
+                  (markdown-fontify-region-wiki-links new-from new-to))))))
+      (and (not modified)
+           (buffer-modified-p)
+           (set-buffer-modified-p nil)))))
+
+(defun markdown-check-change-for-wiki-link-after-change (from to _)
+    "Check region between FROM and TO for wiki links and re-fontify as needed.
+Designed to be used with the `after-change-functions' hook."
+  (markdown-check-change-for-wiki-link from to))
 
 (defun markdown-fontify-buffer-wiki-links ()
   "Refontify all wiki links in the buffer."
   (interactive)
-  (markdown-check-change-for-wiki-link (point-min) (point-max) 0))
+  (markdown-check-change-for-wiki-link (point-min) (point-max)))
 
 
 ;;; Following and Jumping =====================================================
@@ -5509,8 +5672,8 @@ markers and footnote text."
   "Compress whitespace in STR and return result.
 Leading and trailing whitespace is removed.  Sequences of multiple
 spaces, tabs, and newlines are replaced with single spaces."
-  (replace-regexp-in-string "\\(^[ \t\n]+\\|[ \t\n]+$\\)" ""
-                            (replace-regexp-in-string "[ \t\n]+" " " str)))
+  (markdown-replace-regexp-in-string "\\(^[ \t\n]+\\|[ \t\n]+$\\)" ""
+                            (markdown-replace-regexp-in-string "[ \t\n]+" " " str)))
 
 (defun markdown-line-number-at-pos (&optional pos)
   "Return (narrowed) buffer line number at position POS.
@@ -5540,7 +5703,7 @@ This is an exact copy of `line-number-at-pos' for use in emacs21."
   (cond
    ;; List item inside blockquote
    ((looking-at "^[ \t]*>[ \t]*\\(\\(?:[0-9]+\\|#\\)\\.\\|[*+-]\\)[ \t]+")
-    (replace-regexp-in-string
+    (markdown-replace-regexp-in-string
      "[0-9\\.*+-]" " " (match-string-no-properties 0)))
    ;; Blockquote
    ((looking-at "^[ \t]*>[ \t]*")
@@ -5759,7 +5922,8 @@ before regenerating font-lock rules for extensions."
     (make-local-hook 'window-configuration-change-hook))
 
   ;; Anytime text changes make sure it gets fontified correctly
-  (add-hook 'after-change-functions 'markdown-check-change-for-wiki-link t t)
+  (add-hook 'after-change-functions
+            'markdown-check-change-for-wiki-link-after-change t t)
 
   ;; Make checkboxes buttons
   (when markdown-make-gfm-checkboxes-buttons
@@ -5771,6 +5935,10 @@ before regenerating font-lock rules for extensions."
   ;; refontified when we come back.
   (add-hook 'window-configuration-change-hook
             'markdown-fontify-buffer-wiki-links t t)
+
+  ;; add live preview export hook
+  (add-hook 'after-save-hook #'markdown-live-preview-if-markdown t t)
+  (add-hook 'kill-buffer-hook #'markdown-live-preview-remove-on-kill t t)
 
   ;; do the initial link fontification
   (markdown-fontify-buffer-wiki-links))
@@ -5806,7 +5974,8 @@ before regenerating font-lock rules for extensions."
   (set (make-local-variable 'font-lock-defaults)
        '(gfm-font-lock-keywords))
   ;; do the initial link fontification
-  (markdown-fontify-buffer-wiki-links))
+  (markdown-fontify-buffer-wiki-links)
+  (markdown-gfm-parse-buffer-for-languages))
 
 
 ;;; Live Preview Mode  ============================================
@@ -5816,9 +5985,6 @@ before regenerating font-lock rules for extensions."
   (if markdown-live-preview-mode
       (markdown-display-buffer-other-window (markdown-live-preview-export))
     (markdown-live-preview-remove)))
-
-(add-hook 'after-save-hook #'markdown-live-preview-if-markdown)
-(add-hook 'kill-buffer-hook #'markdown-live-preview-remove-on-kill)
 
 
 (provide 'markdown-mode)
