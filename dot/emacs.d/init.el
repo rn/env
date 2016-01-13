@@ -123,7 +123,7 @@
   (message "running prog-mode-hook")
   ;(fci-mode t)
   (flyspell-prog-mode)
-  (whitespace-cleanup)
+  ;(whitespace-cleanup)
   )
 (add-hook 'prog-mode-hook 'prog-mode-hook-f)
 (mapc (lambda (mode-hook) (add-hook mode-hook 'prog-mode-hook-f))
