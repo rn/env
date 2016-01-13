@@ -1,18 +1,22 @@
 # General settings
 Host *
      ForwardAgent yes
-     ForwardX11 yes
 
-# Hosts
-Host rlin00
-     User rneugeba
-
+# Source hosts
 Host bitbucket
+     ForwardX11 no
      User rneugeba
      HostName bitbucket.org
      IdentityFile ~/.ssh/bitbucket
 
 Host github
+     ForwardX11 no
      User git
      HostName ssh.github.com
      IdentityFile ~/.ssh/github
+
+# Hosts
+Host rlin00
+     ForwardX11 yes
+     User rneugeba
+
