@@ -140,6 +140,7 @@
 (push '("\\.bibtex$" . bibtex-mode) auto-mode-alist)
 
 (push '("\\.gnp$" . gnuplot-mode) auto-mode-alist)
+(push '("\\.gpl$" . gnuplot-mode) auto-mode-alist)
 
 (push '("\\.php$" . php-mode) auto-mode-alist)
 (push '("\\`<\\?xml" . web-mode) magic-mode-alist)
