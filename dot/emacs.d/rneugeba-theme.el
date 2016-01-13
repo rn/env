@@ -70,7 +70,7 @@
  '(link ((t (:underline (:color foreground-color :style line)
                         :inherit (font-lock-keyword-face)))))
  '(link-visited ((t (:foreground "violet" :inherit (link)))))
- '(fringe ((t (:background "gray"))))
+ '(fringe ((t (:background "grey10"))))
  '(header-line ((t (:foreground "grey90" :background "grey20"))))
  '(tooltip ((t (:foreground "#333" :background "#fff"
                 :inherit (variable-pitch)))))
