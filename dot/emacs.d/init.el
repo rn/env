@@ -131,6 +131,10 @@
         emacs-lisp-mode-hook
         ))
 
+;; c-mode default indent is 4 (what else)
+(setq-default c-basic-offset 4)
+
+;; non-standard file associations
 (push '("\\.tex$" . latex-mode) auto-mode-alist)
 (push '("\\.latex$" . latex-mode) auto-mode-alist)
 (push '("\\.bibtex$" . bibtex-mode) auto-mode-alist)
