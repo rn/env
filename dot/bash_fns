@@ -1,2 +1,69 @@
 # -*- mode: sh -*-
-# TODO
+
+##
+## recursive grep through source files
+##
+function sgrep () {
+    find . \( \
+         -name "*.[ch]" \
+         -or -name "*.cc" -or -name "*.hh" \
+         -or -name "*.el" \
+         -or -name "*.py" \
+         -or -name "*.go" \
+         -or -name "*.[sS]" \
+         -or -name "*.uc" \
+         \
+         -or -name "Make*" -or -name "*.mk" \
+         \
+         -or -name "README*" \
+         -or -name "*.tex" -or -name "*.bib" \
+         -or -name "*.md" \
+         -or -name "*.xml" \
+         -or -name "*.html" \
+    \) -print0 | xargs -0 grep -Ens --colour "$@"
+}
+
+
+##
+## I keep a bunch of read-only repositories under ~/src/repos
+##
+
+# List repositories (and their source)
+function repos-ls () {
+    git_repos=`find ~/src/repos/ -type d -name .git`
+    hg_repos=`find ~/src/repos/ -type d -name .hg`
+
+    echo "=== Git repositories"
+    for r in $git_repos; do
+        p=`dirname $r`
+        b=${p#$HOME/src/repos//}
+        s=`git -C $p remote -v | grep fetch | awk '{print $2}'`
+        printf "%-25s %s\n" $b $s
+    done
+
+    echo "=== HG repositories"
+    for r in $hg_repos; do
+        p=`dirname $r`
+        b=${p#$HOME/src/repos//}
+        s=`hg -R $p paths default`
+        printf "%-25s %s\n" $b $s
+    done
+}
+
+# Update all repositories
+function repos-up () {
+    git_repos=`find ~/src/repos/ -type d -name .git`
+    hg_repos=`find ~/src/repos/ -type d -name .hg`
+
+    for r in $git_repos; do
+        p=`dirname $r`
+        echo "=== Pulling $p"
+        git -C $p pull
+    done
+
+    for r in $hg_repos; do
+        p=`dirname $r`
+        echo "=== Pulling $p"
+        hg -R $p pull -u
+    done
+}
