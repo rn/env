@@ -57,12 +57,14 @@ function repos-up () {
 
     for r in $git_repos; do
         p=`dirname $r`
+        echo
         echo "=== Pulling $p"
         git -C $p pull
     done
 
     for r in $hg_repos; do
         p=`dirname $r`
+        echo
         echo "=== Pulling $p"
         hg -R $p pull -u
     done
