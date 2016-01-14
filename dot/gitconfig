@@ -1,43 +1,128 @@
+# -*- mode: conf -*-
 [user]
     name = Rolf Neugebauer
     email = rolf.neugebauer@gmail.com
 
 [alias]
-    whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
+    # Some of these snarfed from jfrazelle and mor1
+
+    ## Log viewing commands
+
+    # Short log (with graph), One line per commit
+    l = log --pretty=oneline --graph --abbrev-commit
+
+    # Long log, multiple lines per commit, short SHA
+    ll = log --all --decorate=full --abbrev-commit
+
+    # Log graph
+    lg = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
+
+    # Another variant
+    graph = log --graph --color --pretty=format:"%C(yellow)%H%C(green)%d%C(reset)%n%x20%cd%n%x20%cn%x20(%ce)%n%x20%s%n"
+
+    # Long log graph
+    llg = log --all --color-words --graph --decorate=full --stat
+
+    # Log with full diff
+    ldiff = log --all -p --decorate=full --word-diff=color
+
+    # List who commit how often
+    who = shortlog --summary --numbered
+
     whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
-    st = status
     rev = rev-parse HEAD
-    ci = commit
+
+    # Show verbose output about tags, branches or remotes
+    tags = tag -l
+    branches = branch -a
+    remotes = remote -v
+
+
+    ## Status
+    s = status -s
+    st = status
+    stat = status
+
+
+    ## Changes
+    mdiff = "!f() { git stash | head -1 | grep -q 'No local changes to save'; x=$?; git merge --no-commit $1 &>/dev/null; git add -u &>/dev/null; git diff --staged; git reset --hard &>/dev/null; test $x -ne 0 && git stash pop &>/dev/null; }; f"
+
+
+    ## Branches
+
+    # Switch to a branch, creating it if necessary
+    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+
+    # Remove branches that have already been merged with master: delete merged
+    dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+
     br = branch -avv
     co = checkout
-    df = diff --word-diff=color
-    dfw = diff -R --color
-    l = log --all --decorate=full
-    lg = log --all --graph --decorate=full --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
-    llg = log --all --color-words --graph --decorate=full --stat
-    ldiff = log --all -p --decorate=full --word-diff=color
-    timeline = log --oneline --decorate --graph
-    human = "name-rev --refs=refs/heads/* --stdin"
-    who = shortlog -s --
-    patdiff = difftool -y -x patdiff
+
+
+    ## Commit
+
+    # Commit all changes
+    ca = !git add -A && git commit -av
+
+    # Commit all changes and sign off
+    cas = !git add -A && git commit -asv
+
+    # Amend the currently staged files to the latest commit
+    amend = commit --amend --reuse-message=HEAD
+
+
+    ## Pull/Clone
+    p = !"git pull; git submodule foreach git pull origin master"
+    up = !"git pull; git submodule foreach git pull origin master"
+    c = clone --recursive
+
+    ## Find
+
+    # Find branches containing commit
+    fb = "!f() { git branch -a --contains $1; }; f"
+
+    # Find tags containing commit
+    ft = "!f() { git describe --always --contains $1; }; f"
+
+    # Find commits by source code
+    fc = "!f() { git log --pretty=format:'%C(yellow)%h	%Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
+
+    # Find commits by commit message
+    fm = "!f() { git log --pretty=format:'%C(yellow)%h	%Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+
 
 [color]
     ui = true
     diff = true
 
+[apply]
+    # Detect whitespace errors when applying a patch
+    whitespace = fix
+
 [core]
     pager = less -+$LESS -FRXi
-    autocrlf = input
-    whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
+
+    # Treat spaces before tabs and all kinds of trailing whitespace as an error
+    # [default] trailing-space: looks for spaces at the end of a line
+    # [default] space-before-tab: looks for spaces before tabs at the
+    #           beginning of a line
+    whitespace = space-before-tab,-indent-with-non-tab,trailing-space,cr-at-eol
+
+    # Make `git rebase` safer on OS X
+    # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
+    trustctime = false
 
 [push]
     default = tracking
 
 [merge]
     conflictstyle = diff3
+    # Include summaries of merged commits in newly created merge commit messages
+    log = true
 
 [diff]
-    renames = true
+    renames = copies
 
 [sendemail]
     from = Rolf Neugebauer <rolf.neugebauer@gmail.com>
@@ -46,4 +131,3 @@
     smtpencryption = tls
     chainreplyto = false
     smtpserverport = 587
-
