@@ -1,9 +1,5 @@
 # -*- mode: sh -*-
 
-# include aliases and functions
-[ -r ~/.bash_fns ] && source ~/.bash_fns
-
-
 # general settings
 shopt -s checkwinsize    # Handle window resize
 shopt -s extglob         # enable extra glob patterns
@@ -54,16 +50,6 @@ addenv MANPATH /usr/share/man
 addenv MANPATH ~/tools/man
 addenv MANPATH /usr/local/man
 
-
-# Aliases
-alias ls='ls -F'
-alias ll='ls -l'
-alias la='ls -al'
-alias lm='ls -al | more'
-
-alias psg='ps -aux | grep \!* | grep -v grep'
-
-
 # History
 command_oriented_history=TRUE
 shopt -s histappend
@@ -71,6 +57,30 @@ export HISTIGNORE="&:l[sl][a]:[bf]g:exit:[ \t]"
 export HISTCONTROL=ignoreboth:erasedups
 export HISTSIZE=10000
 export HISTFILESIZE=10000
+
+# Aliases
+alias ls='ls -F'
+alias ll='ls -l'
+alias la='ls -al'
+alias lm='ls -al | less'
+
+alias grep='grep --color=auto '
+
+alias psg='ps -auwx | grep \!* | grep -v grep'
+
+case $OSNAME in
+    Linux)
+        # copy working directory
+        alias cwd='pwd | tr -d "\r\n" | xclip -selection clipboard'
+        ;;
+    Darwin)
+        # copy working directory
+        alias cwd='pwd | tr -d "\r\n" | pbcopy'
+        ;;
+esac
+
+# include aliases and functions
+[ -r ~/.bash_fns ] && source ~/.bash_fns
 
 # final cd to set the prompt
 cd
