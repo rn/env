@@ -1,6 +1,7 @@
 # General settings
 Host *
      ForwardAgent yes
+     UseRoaming no
 
 # Source hosts
 Host bitbucket
