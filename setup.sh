@@ -42,3 +42,12 @@ for f in ${TOOLS_DIR}/*; do
     [ -f ~/tools/bin/$bf -o -L ~/tools/bin/$bf ] && rm -f ~/tools/bin/$bf
     ln -s $f ~/tools/bin/$bf
 done
+
+# Misc
+
+# iterm preferences
+[ -f ~/Library/Preferences/com.googlecode.iterm2.plist ] && \
+    rm ~/Library/Preferences/com.googlecode.iterm2.plist
+ln -s ${SOURCE_DIR}/misc/com.googlecode.iterm2.plist ~/Library/Preferences/
+# Update them
+defaults read com.googlecode.iterm2
