@@ -9,7 +9,6 @@ hgext.convert=
 hgext.churn=
 rebase=
 transplant=
-hgext.hgview=
 hgext.patchbomb =
 
 [diff]
