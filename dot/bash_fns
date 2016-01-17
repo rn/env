@@ -28,25 +28,36 @@ function sgrep () {
 ## I keep a bunch of read-only repositories under ~/src/repos
 ##
 
-# List repositories (and their source)
+# List repositories (and their source).
+# If any argument is supplied print out commands to reproduce the setup
 function repos-ls () {
     git_repos=`find ~/src/repos/ -type d -name .git`
     hg_repos=`find ~/src/repos/ -type d -name .hg`
 
-    echo "=== Git repositories"
+    echo "### Git repositories"
     for r in $git_repos; do
         p=`dirname $r`
         b=${p#$HOME/src/repos//}
         s=`git -C $p remote -v | grep fetch | awk '{print $2}'`
-        printf "%-25s %s\n" $b $s
+        if [ -z "$1" ]; then
+            printf "%-25s %s\n" $b $s
+        else
+            d=`dirname $b`
+            echo "(mkdir -p $d; cd $d; git clone $s)"
+        fi
     done
 
-    echo "=== HG repositories"
+    echo "### HG repositories"
     for r in $hg_repos; do
         p=`dirname $r`
         b=${p#$HOME/src/repos//}
         s=`hg -R $p paths default`
-        printf "%-25s %s\n" $b $s
+        if [ -z "$1" ]; then
+            printf "%-25s %s\n" $b $s
+        else
+            d=`dirname $b`
+            echo "(mkdir -p $d; cd $d; hg clone $s)"
+        fi
     done
 }
 
