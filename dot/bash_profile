@@ -86,5 +86,12 @@ esac
 # include aliases and functions
 [ -r ~/.bash_fns ] && source ~/.bash_fns
 
+# Brew bash completions on MacOS
+if [ $OSNAME = "Darwin" ]; then
+    if [ -f $(brew --prefix)/etc/bash_completion ]; then
+        . $(brew --prefix)/etc/bash_completion
+    fi
+fi
+
 # final cd to set the prompt
 cd
