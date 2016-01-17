@@ -76,6 +76,10 @@ case $OSNAME in
     Darwin)
         # copy working directory
         alias cwd='pwd | tr -d "\r\n" | pbcopy'
+        # prefer brew version of git
+        [ -e /usr/local/bin/git ] && alias git=/usr/local/bin/git
+        # Use emacs app
+        alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
         ;;
 esac
 
