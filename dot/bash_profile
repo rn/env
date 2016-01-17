@@ -20,12 +20,30 @@ MANPAGER="less -FRXi"
 export PAGER MANPAGER
 
 # Prompt
-# Short host name only and update with the last 20 characters of PWD
+# Short host name, last 20 characters of PWD, and optional git status
+case $OSNAME in
+    Linux)
+        if [ -d /etc/bash_completion.d/git-prompt ]; then
+            . /etc/bash_completion.d/git-prompt
+        fi
+        ;;
+    Darwin)
+        if [ -d $(brew --prefix)/etc/bash_completion.d ]; then
+            . $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
+        fi
+        ;;
+esac
+GIT_PS1_SHOWDIRTYSTATE=true
+GIT_PS1_SHOWSTASHSTATE=
+GIT_PS1_SHOWUNTRACKEDFILES=
+GIT_PS1_SHOWCOLORHINTS=true
+GIT_PS1_SHOWUPSTREAM=
+
 PS1SHOST=$SHOST
 export PS1SHOST
 cd () {
     builtin cd "$@"
-    PS1="\h:`echo $PWD | tail -20c`: "
+    PS1="\h:`echo $PWD | tail -20c`$(__git_ps1 " (%s)"): "
 }
 
 # Add an element to the end of an environment variable
