@@ -21,10 +21,10 @@
     graph = log --graph --color --pretty=format:"%C(yellow)%H%C(green)%d%C(reset)%n%x20%cd%n%x20%cn%x20(%ce)%n%x20%s%n"
 
     # Long log graph
-    llg = log --all --color-words --graph --decorate=full --stat
+    llg = log --all --color-words --graph --stat
 
     # Log with full diff
-    ldiff = log --all -p --decorate=full --word-diff=color
+    ldiff = log --all -p --color
 
     # List who commit how often
     who = shortlog --summary --numbered
