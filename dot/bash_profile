@@ -54,7 +54,7 @@ addenv () {
 
 # Build path from scratch
 unset PATH
-addenv PATH /sbin
+PATH=/sbin # Set first path element directly to avoid leading ':' in the path
 addenv PATH /bin
 addenv PATH /usr/sbin
 addenv PATH /usr/bin
