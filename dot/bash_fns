@@ -8,9 +8,11 @@ function sgrep () {
          -name "*.[ch]" \
          -or -name "*.cc" -or -name "*.hh" \
          -or -name "*.el" \
+         -or -name "*.ml" \
          -or -name "*.py" \
          -or -name "*.go" \
          -or -name "*.[sS]" \
+         -or -name "*.swift" \
          -or -name "*.uc" \
          \
          -or -name "Make*" -or -name "*.mk" \
@@ -21,6 +23,74 @@ function sgrep () {
          -or -name "*.xml" \
          -or -name "*.html" \
     \) -print0 | xargs -0 grep -Ens --colour "$@"
+}
+
+##
+## Functions do deal with repositories
+##
+
+# Set docker username/email on a local repository
+function repo-docker() {
+    git config --local user.name "Rolf Neugebauer"
+    git config --local user.email "rolf.neugebauer@docker.com"
+}
+
+
+# Update a git repository
+# $1: Path to *toplevel* of repository.
+# - Assumes that master branch is clean
+# - Stash any local changes on current branch
+# - If it is a github fork
+#   + pull from upstream
+#   + pull from master
+#   + merge upstream onto master (should be fast-forward)
+#   + push master to github fork
+function _repo_git_up() {
+    pushd $1 > /dev/null
+    branch=`git rev-parse --abbrev-ref HEAD`
+    changes=`git diff-index --name-only HEAD --`
+    upstream=`git remote -v | grep upstream`
+
+    # Stash changes and switch to master
+    [ -n "$changes" ] && git stash
+    [ ! "$branch" = "master" ] && git checkout master
+
+    # pull or fetch/merge
+    if [ -n "$upstream" ]; then
+        git fetch upstream
+        git merge upstream/master
+        git push origin master
+    else
+        git pull
+    fi
+
+    # switch back to branch and apply stash
+    [ ! "$branch" = "master" ] && git checkout $branch
+    [ -n "$changes" ] && git stash apply
+
+    popd > /dev/null
+}
+
+# Update a Mercurial/hg repository
+# $1: Path to repository
+function _repo_hg_up() {
+    # XXX This could be more sophisticated
+    hg -R $1 pull -u
+}
+
+# Update a repository
+# $1: Optional argument for the path (otherwise $PWD)
+function repo-up () {
+    [ -z "$1" ] && r=`pwd` || r=$1
+
+    # Work out if this is a git or hg repository
+    git_dir=`git -C $r rev-parse --show-toplevel 2> /dev/null`
+    hg_dir=`hg --cwd $r root 2> /dev/null`
+    if [ -n "$git_dir" ]; then
+        _repo_git_up $git_dir
+    elif [ -n "$hg_dir" ]; then
+        _repo_hg_up $hg_dir
+    fi
 }
 
 
@@ -70,13 +140,13 @@ function repos-up () {
         p=`dirname $r`
         echo
         echo "=== Pulling $p"
-        git -C $p pull
+        _repo_git_up $p
     done
 
     for r in $hg_repos; do
         p=`dirname $r`
         echo
         echo "=== Pulling $p"
-        hg -R $p pull -u
+        _repo_hg_up $p
     done
 }
