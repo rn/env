@@ -26,6 +26,13 @@ function sgrep () {
 }
 
 ##
+## recursive grep through all files
+##
+function trawl () {
+    find . -type f -print0 | xargs -0 grep -Ens --colour "$@"
+}
+
+##
 ## Functions do deal with repositories
 ##
 
