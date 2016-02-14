@@ -42,13 +42,16 @@ GIT_PS1_SHOWSTASHSTATE=true
 GIT_PS1_SHOWUNTRACKEDFILES=
 GIT_PS1_SHOWUPSTREAM=
 
+COLOR_OFF='\e[0m'
+YELLOW='\e[0;33m'
+
 # __git_ps1 takes up to three arguments:
 # $1 before git status (empty)
 # $2 after git status
 # $3 format string for git status
 PROMPT_COMMAND='__git_ps1 \
   "" \
-  "\h:`echo $PWD | tail -20c`: "\
+  "\[$YELLOW\]\h\[$COLOR_OFF\]:`echo $PWD | tail -20c`: "\
   "[%s]" \
   '
 
