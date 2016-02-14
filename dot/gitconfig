@@ -42,7 +42,7 @@
     st = status
     stat = status
 
-    ## A alias to help rewrite history    
+    ## A alias to help rewrite history
     ## Takes a number <n> as an argument and allows you to re-order
     ## the last <n> commits, moving one to the top, amend and move back.
     rbi = "!f() { git rebase -i HEAD~$1; }; f"
@@ -119,6 +119,9 @@
     # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
     trustctime = false
 
+    # Force editor to be vi
+    editor = vi
+
 [push]
     default = tracking
 
@@ -137,9 +140,11 @@
     smtpencryption = tls
     chainreplyto = false
     smtpserverport = 587
+
 [difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+    cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+    path =
+
 [mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+    cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+    trustExitCode = true
