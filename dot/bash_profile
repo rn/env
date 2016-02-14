@@ -20,7 +20,9 @@ MANPAGER="less -FRXi"
 export PAGER MANPAGER
 
 # Prompt
-# Short host name, last 20 characters of PWD, and optional git status
+# git status, short host name, last 20 characters of PWD
+export NO_PROMPT_VARS
+PS1SHOST=$SHOST
 case $OSNAME in
     Linux)
         if [ -d /etc/bash_completion.d/git-prompt ]; then
@@ -33,18 +35,22 @@ case $OSNAME in
         fi
         ;;
 esac
-GIT_PS1_SHOWDIRTYSTATE=true
-GIT_PS1_SHOWSTASHSTATE=
-GIT_PS1_SHOWUNTRACKEDFILES=
+
 GIT_PS1_SHOWCOLORHINTS=true
+GIT_PS1_SHOWDIRTYSTATE=true
+GIT_PS1_SHOWSTASHSTATE=true
+GIT_PS1_SHOWUNTRACKEDFILES=
 GIT_PS1_SHOWUPSTREAM=
 
-PS1SHOST=$SHOST
-export PS1SHOST
-cd () {
-    builtin cd "$@"
-    PS1="$(__git_ps1 "[%s]")\h:`echo $PWD | tail -20c`: "
-}
+# __git_ps1 takes up to three arguments:
+# $1 before git status (empty)
+# $2 after git status
+# $3 format string for git status
+PROMPT_COMMAND='__git_ps1 \
+  "" \
+  "\h:`echo $PWD | tail -20c`: "\
+  "[%s]" \
+  '
 
 # Add an element to the end of an environment variable
 addenv () {
@@ -118,6 +124,3 @@ if [ $OSNAME = "Darwin" ]; then
         . $(brew --prefix)/etc/bash_completion
     fi
 fi
-
-# final cd to set the prompt
-cd
