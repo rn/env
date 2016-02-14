@@ -43,7 +43,7 @@ GIT_PS1_SHOWUNTRACKEDFILES=
 GIT_PS1_SHOWUPSTREAM=
 
 COLOR_OFF='\e[0m'
-YELLOW='\e[0;33m'
+LORANGE='\e[38;5;215m'
 
 # __git_ps1 takes up to three arguments:
 # $1 before git status (empty)
@@ -51,7 +51,7 @@ YELLOW='\e[0;33m'
 # $3 format string for git status
 PROMPT_COMMAND='__git_ps1 \
   "" \
-  "\[$YELLOW\]\h\[$COLOR_OFF\]:`echo $PWD | tail -20c`: "\
+  "\[$LORANGE\]\h\[$COLOR_OFF\]:`echo $PWD | tail -20c`: "\
   "[%s]" \
   '
 
