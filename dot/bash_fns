@@ -32,6 +32,15 @@ function trawl () {
     find . -type f -print0 | xargs -0 grep -Ens --colour "$@"
 }
 
+
+##
+## Update brew
+##
+function brew-up () {
+    brew update && brew upgrade && brew cleanup
+    brew upgrade brew-cask && brew cask cleanup
+}
+
 ##
 ## Functions do deal with repositories
 ##
