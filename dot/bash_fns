@@ -82,7 +82,7 @@ function _repo_git_up() {
 
     # switch back to branch and apply stash
     [ ! "$branch" = "master" ] && git checkout $branch
-    [ -n "$changes" ] && git stash apply
+    [ -n "$changes" ] && git stash apply && git stash clear
 
     popd > /dev/null
 }
