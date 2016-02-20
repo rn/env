@@ -7,11 +7,14 @@ function sgrep () {
     find . \( \
          -name "*.[ch]" \
          -or -name "*.cc" -or -name "*.hh" \
+         -or -name "*.cs" \
          -or -name "*.el" \
          -or -name "*.ml" \
+         -or -name "*.ps1" -or -name "*.psm1"\
          -or -name "*.py" \
          -or -name "*.go" \
          -or -name "*.[sS]" \
+         -or -name "*.sh" \
          -or -name "*.swift" \
          -or -name "*.uc" \
          \
@@ -22,14 +25,14 @@ function sgrep () {
          -or -name "*.md" \
          -or -name "*.xml" \
          -or -name "*.html" \
-    \) -print0 | xargs -0 grep -Ens --colour "$@"
+    \) -print0 | xargs -0 grep -Ensi --colour "$@"
 }
 
 ##
 ## recursive grep through all files
 ##
 function trawl () {
-    find . -type f -print0 | xargs -0 grep -Ens --colour "$@"
+    find . -type f -print0 | xargs -0 grep -Ensi --colour "$@"
 }
 
 
