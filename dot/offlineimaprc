@@ -1,0 +1,135 @@
+##
+## Offline Imap configuration
+##
+## For Gmail based accounts, copy all email (creates duplicates)
+## For password management on a Mac, check:
+## http://stevelosh.com/blog/2012/10/the-homely-mutt/#retrieving-passwords
+##
+
+[general]
+accounts = Fastmail, Docker, Gmail, Cosini, Archive
+
+ui = TTYUI
+pythonfile = ~/tools/lib/offlineimap.py
+fsync = no
+status_backend = sqlite
+
+[DEFAULT]
+sslcacertfile = /usr/local/etc/openssl/certs/offlineimap-dumy-cert.pem
+ssl = yes
+realdelete = no
+maxconnections = 1
+
+
+##
+## Local IMAP Server (on synology)
+##
+[Account Archive]
+localrepository = Archive-Local
+remoterepository = Archive-Remote
+
+[Repository Archive-Local]
+type = GmailMaildir
+localfolders = ~/Mail/Archive
+
+[Repository Archive-Remote]
+# Create a self-signed cert using the UI for rsyn.local and export it
+# Point offline imap at the ca.crt file
+type = IMAP
+sslcacertfile = /usr/local/etc/openssl/certs/rsyn.local.crt
+remotehost = rsyn.local
+remoteuser = rneugeba
+remotepasseval = get_keychain_pass(account="rn@acm.org", server="rsyn.local")
+
+
+##
+## Gmail
+##
+[Account Gmail]
+localrepository = Gmail-Local
+remoterepository = Gmail-Remote
+labelsheader = X-Keywords
+synclabels = yes
+ignorelabels = \Important, \Draft
+
+[Repository Gmail-Local]
+type = GmailMaildir
+localfolders = ~/Mail/Gmail
+nametrans = gmail_eu_to_remote
+
+[Repository Gmail-Remote]
+type = Gmail
+remoteuser = rolf.neugebauer@gmail.com
+remotepasseval = get_keychain_pass(
+    account="rolf.neugebauer@gmail.com", server="imap.gmail.com")
+nametrans = gmail_eu_to_local
+
+
+##
+## Fastmail
+##
+[Account Fastmail]
+localrepository = Fastmail-Local
+remoterepository = Fastmail-Remote
+
+[Repository Fastmail-Local]
+type = Maildir
+localfolders = ~/Mail/Fastmail
+
+[Repository Fastmail-Remote]
+type = IMAP
+remotehost = mail.messagingengine.com
+remoteuser = rolf@fastmail.us
+remotepasseval = get_keychain_pass(
+    account="rolf@fastmail.us", server="mail.messagingengine.com")
+
+
+##
+## Cosini
+##
+[Account Cosini]
+localrepository = Cosini-Local
+remoterepository = Cosini-Remote
+labelsheader = X-Keywords
+synclabels = yes
+ignorelabels = \Important, \Draft
+
+[Repository Cosini-Local]
+type = GmailMaildir
+localfolders = ~/Mail/Cosini
+nametrans = gmail_us_to_remote
+
+[Repository Cosini-Remote]
+type = Gmail
+remoteuser = cosini.mail@googlemail.com
+remotepasseval = get_keychain_pass(
+    account="cosini.mail@googlemail.com", server="imap.gmail.com")
+nametrans = gmail_us_to_local
+
+
+##
+## Hotmail
+##
+# Todo
+
+##
+## Docker
+##
+[Account Docker]
+localrepository = Docker-Local
+remoterepository = Docker-Remote
+labelsheader = X-Keywords
+synclabels = yes
+ignorelabels = \Important, \Draft
+
+[Repository Docker-Local]
+type = GmailMaildir
+localfolders = ~/Mail/Docker
+nametrans = gmail_eu_to_remote
+
+[Repository Docker-Remote]
+type = Gmail
+remoteuser = rolf.neugebauer@docker.com
+remotepasseval = get_keychain_pass(
+    account="rolf.neugebauer@docker.com", server="imap.gmail.com")
+nametrans = gmail_eu_to_local

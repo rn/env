@@ -44,6 +44,15 @@ for f in ${TOOLS_DIR}/*; do
     ln -s $f ~/tools/bin/$bf
 done
 
+cd ${SOURCE_DIR}/tools/lib
+TOOLS_DIR=`pwd`
+mkdir -p ~/tools/lib
+for f in ${TOOLS_DIR}/*; do
+    bf=`basename $f`
+    [ -f ~/tools/lib/$bf -o -L ~/tools/lib/$bf ] && rm -f ~/tools/lib/$bf
+    ln -s $f ~/tools/lib/$bf
+done
+
 # Misc
 if [ $OSNAME = "Darwin" ]; then
     # iterm preferences
