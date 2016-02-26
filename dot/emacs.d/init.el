@@ -180,6 +180,9 @@
 (define-key my-keys-minor-mode-map (kbd "<f6>")       'switch-to-buffer)
 (define-key my-keys-minor-mode-map (kbd "<f10>")      'kill-buffer)
 
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+
 ;; | point-to  | previous   | next        |
 ;; |-----------+------------+-------------|
 ;; | char      | <left>     | <right>     |
