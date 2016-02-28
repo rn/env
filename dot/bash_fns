@@ -41,7 +41,7 @@ function trawl () {
 ##
 function brew-up () {
     brew update && brew upgrade && brew cleanup
-    brew upgrade brew-cask && brew cask cleanup
+    brew cask update && brew cask cleanup
 }
 
 ##
