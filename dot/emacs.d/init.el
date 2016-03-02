@@ -126,6 +126,7 @@
   (message "running prog-mode-hook")
   ;(fci-mode t)
   (flyspell-prog-mode)
+  (clean-aindent-mode)
   ;(whitespace-cleanup)
   )
 (add-hook 'prog-mode-hook 'prog-mode-hook-f)
