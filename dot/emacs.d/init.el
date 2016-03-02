@@ -22,6 +22,7 @@
 (setq make-backup-files nil)        ;; No backup files
 (setq auto-save-interval 0)         ;; No autosafe
 (setq-default indent-tabs-mode nil) ;; No tabs by default
+(dtrt-indent-mode 1)                ;; detect tabs/spaces automatically
 
 ;; Load my colour theme and set font on Mac OS X
 (load-theme 'rneugeba t)
