@@ -13,16 +13,6 @@
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (setq inhibit-startup-message t)
 
-;; General settings
-(setq focus-follows-mouse t)        ;; Shame this doesn't work on OSX
-(line-number-mode 't)               ;; Display line numbers
-(column-number-mode 't)             ;; Display column numbers
-(transient-mark-mode 1)             ;; Should be default from 23 onwards
-(show-paren-mode 1)                 ;; Parentheis highlight
-(setq make-backup-files nil)        ;; No backup files
-(setq auto-save-interval 0)         ;; No autosafe
-(setq-default indent-tabs-mode nil) ;; No tabs by default
-
 ;; Load my colour theme and set font on Mac OS X
 (load-theme 'rneugeba t)
 (cond
@@ -48,7 +38,9 @@
   )
 (set-exec-path-from-shell-PATH)
 
+;;
 ;; package management
+;;
 (eval-after-load "package"
   '(progn
      (add-to-list 'package-archives
@@ -61,9 +53,23 @@
 
 (setq package-enable-at-startup nil)
 (package-initialize)
-;; Modes from packages after this
 
-(dtrt-indent-mode 1)                ;; detect tabs/spaces automatically
+;;
+;; General settings
+;;
+(setq focus-follows-mouse t)         ;; Shame this doesn't work on OSX
+(line-number-mode 't)                ;; Display line numbers
+(column-number-mode 't)              ;; Display column numbers
+(transient-mark-mode 1)              ;; Should be default from 23 onwards
+(show-paren-mode 1)                  ;; Parentheis highlight
+(setq make-backup-files nil)         ;; No backup files
+(setq auto-save-interval 0)          ;; No autosafe
+(setq-default indent-tabs-mode nil)  ;; No tabs by default
+(dtrt-indent-mode 1)                 ;; detect tabs/spaces automatically
+;; default save encoding: utf-8
+(set-language-environment "utf-8")
+(set-coding-priority (list 'coding-category-utf-8))
+(prefer-coding-system 'utf-8)
 
 ;; ispell
 (cond
@@ -76,10 +82,6 @@
    )
 (setq ispell-dictionary "british")
 
-;; default save encoding: utf-8
-(set-language-environment "utf-8")
-(set-coding-priority (list 'coding-category-utf-8))
-(prefer-coding-system 'utf-8)
 
 ;;
 ;; Functions
@@ -135,11 +137,6 @@
       '(nxml-mode-hook
         emacs-lisp-mode-hook
         ))
-
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-              (ggtags-mode 1))))
 
 ;; c-mode default indent is 4 (what else)
 (setq-default c-basic-offset 4)
@@ -253,9 +250,20 @@
         (add-to-list 'minor-mode-map-alist mykeys)))
   )
 
+;;
+;; Modeline customisation
+;;
 (require 'diminish)
 (diminish 'my-keys-minor-mode)
+(diminish 'abbrev-mode "Abv")
+(diminish 'dtrt-indent-mode)
+(diminish 'emacs-list-mode "EL")
+(diminish 'flycheck-mode "FC")
+(diminish 'ggtags-mode)
 
+;; Remove 'dtrt-indent' from modeline, should be easier to customise
+(setq global-mode-string (remove 'dtrt-indent-mode-line-info
+                                 global-mode-string))
 
 (load custom-file)
 ;;
