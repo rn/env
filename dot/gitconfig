@@ -122,6 +122,9 @@
     # Force editor to be vi
     editor = vi
 
+    # Global git ignore
+    excludesfile = ~/.gitignore_global
+
 [push]
     default = tracking
 
