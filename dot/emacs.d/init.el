@@ -130,10 +130,16 @@
   ;(whitespace-cleanup)
   )
 (add-hook 'prog-mode-hook 'prog-mode-hook-f)
+
 (mapc (lambda (mode-hook) (add-hook mode-hook 'prog-mode-hook-f))
       '(nxml-mode-hook
         emacs-lisp-mode-hook
         ))
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+              (ggtags-mode 1))))
 
 ;; c-mode default indent is 4 (what else)
 (setq-default c-basic-offset 4)
