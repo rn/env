@@ -54,6 +54,12 @@ function repo-docker() {
     git config --local user.email "rolf.neugebauer@docker.com"
 }
 
+# Update gtags if use on a repository
+# must be executed in the root of the repository
+function _repo_gtags_up() {
+    [ -f GTAGS ] && global -u
+}
+
 
 # Update a git repository
 # $1: Path to *toplevel* of repository.
@@ -87,14 +93,24 @@ function _repo_git_up() {
     [ ! "$branch" = "master" ] && git checkout $branch
     [ -n "$changes" ] && git stash apply && git stash clear
 
+    # update tags
+    _repo_gtags_up
+
     popd > /dev/null
 }
 
 # Update a Mercurial/hg repository
 # $1: Path to repository
 function _repo_hg_up() {
+    pushd $1 > /dev/null
+
     # XXX This could be more sophisticated
-    hg -R $1 pull -u
+    hg pull -u
+
+    # update tags
+    _repo_gtags_up
+
+    popd > /dev/null
 }
 
 # Update a repository
