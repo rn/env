@@ -260,6 +260,8 @@
 (diminish 'emacs-list-mode "EL")
 (diminish 'flycheck-mode "FC")
 (diminish 'ggtags-mode)
+(diminish 'sh-mode "sh")
+(diminish 'shell-script-mode "sh")
 
 ;; Remove 'dtrt-indent' from modeline, should be easier to customise
 (setq global-mode-string (remove 'dtrt-indent-mode-line-info
