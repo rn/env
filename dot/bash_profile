@@ -17,7 +17,8 @@ export LHOST SHOST OSNAME OSKERNEL
 EDITOR=vi
 PAGER="less -FRXi"
 MANPAGER="less -FRXi"
-export PAGER MANPAGER
+LESS="-FRXi"
+export EDITOR PAGER MANPAGER LESS 
 
 # Prompt
 # git status, short host name, last 20 characters of PWD
