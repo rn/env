@@ -35,6 +35,8 @@ case $OSNAME in
             . $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
         fi
         ;;
+    MINGW64_NT*)
+        ;;
 esac
 
 GIT_PS1_SHOWCOLORHINTS=true
@@ -62,9 +64,14 @@ addenv () {
     export ${1}
 }
 
-# Build path from scratch
-unset PATH
-PATH=/sbin # Set first path element directly to avoid leading ':' in the path
+# Build path from scratch (except on Windows...which is different)
+case $OSNAME in
+    MINGW64_NT*)
+    ;;
+    *) # Set first path element directly to avoid leading ':' in the path
+        PATH=/sbin
+        ;;
+esac
 addenv PATH /bin
 addenv PATH /usr/sbin
 addenv PATH /usr/bin
@@ -116,6 +123,8 @@ case $OSNAME in
         [ -e /usr/local/bin/git ] && alias git=/usr/local/bin/git
         # Use emacs app
         alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+        ;;
+    MINGW64_NT*)
         ;;
 esac
 
