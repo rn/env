@@ -16,10 +16,12 @@
 ;; Load my colour theme and set font on Mac OS X
 (load-theme 'rneugeba t)
 (cond
-   ((string-equal system-type "darwin")
-    (set-frame-font "-*-Hack-normal-normal-normal-*-13-*-*-*-m-0-fontset-auto2")
-    )
-   )
+ ((string-equal system-type "darwin")
+  (set-face-attribute 'default t :font
+                      "-*-Hack-normal-normal-normal-*-13-*-*-*-m-0-fontset-auto2")
+  (set-frame-font "-*-Hack-normal-normal-normal-*-13-*-*-*-m-0-fontset-auto2")
+  )
+ )
 
 ;; <http://stackoverflow.com/questions/8606954/
 ;;    path-and-exec-path-set-but-emacs-does-not-find-executable>
