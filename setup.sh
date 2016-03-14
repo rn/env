@@ -14,7 +14,7 @@ function lncp()
     src=$1
     dst=$2
     
-    [ -f $dst -o -d $dst -o -L $dst ] && rm -f $dst
+    [ -f $dst -o -d $dst -o -L $dst ] && rm -rf $dst
     if [ $OSNAME = "MINGW64_NT-10.0" ]; then
         cp -r $src $dst
     else
