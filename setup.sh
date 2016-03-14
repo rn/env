@@ -8,6 +8,21 @@ set -ex
 SOURCE_DIR=`pwd`
 OSNAME=$(uname -s)
 
+# Link or copy (symlinks don't work on Windows)
+function lncp()
+{
+    src=$1
+    dst=$2
+    
+    [ -f $dst -o -d $dst -o -L $dst ] && rm -f $dst
+    if [ $OSNAME = "MINGW64_NT-10.0" ]; then
+        cp -r $src $dst
+    else
+        ln -s $src $dst
+    fi
+}
+
+
 # Dot files
 cd ${SOURCE_DIR}/dot
 DOT_DIR=`pwd`
@@ -18,8 +33,7 @@ for f in ${DOT_DIR}/*; do
             # Skip...handled below
             ;;
         *)
-            [ -f ~/.$bf -o -d ~/.$bf -o -L ~/.$bf ] && rm -f ~/.$bf
-            ln -s $f ~/.$bf
+            lncp $f ~/.$bf
             ;;
     esac
 done
@@ -30,8 +44,7 @@ SSH_DIR=`pwd`
 mkdir -p ~/.ssh
 for f in ${SSH_DIR}/*; do
     bf=`basename $f`
-    [ -f ~/.ssh/$bf -o -L ~/.ssh/$bf ] && rm -f ~/.ssh/$bf
-    ln -s $f ~/.ssh/$bf
+    lncp $f ~/.ssh/$bf
 done
 
 # Tools
@@ -40,8 +53,7 @@ TOOLS_DIR=`pwd`
 mkdir -p ~/tools/bin
 for f in ${TOOLS_DIR}/*; do
     bf=`basename $f`
-    [ -f ~/tools/bin/$bf -o -L ~/tools/bin/$bf ] && rm -f ~/tools/bin/$bf
-    ln -s $f ~/tools/bin/$bf
+    lncp $f  ~/tools/bin/$bf
 done
 
 cd ${SOURCE_DIR}/tools/lib
@@ -49,8 +61,7 @@ TOOLS_DIR=`pwd`
 mkdir -p ~/tools/lib
 for f in ${TOOLS_DIR}/*; do
     bf=`basename $f`
-    [ -f ~/tools/lib/$bf -o -L ~/tools/lib/$bf ] && rm -f ~/tools/lib/$bf
-    ln -s $f ~/tools/lib/$bf
+    lncp $f ~/tools/lib/$bf
 done
 
 # Misc
