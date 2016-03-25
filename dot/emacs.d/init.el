@@ -17,8 +17,8 @@
 (load-theme 'rneugeba t)
 (cond
  ((string-equal system-type "darwin")
-  (set-face-attribute 'default t :font
-                      "-*-Hack-normal-normal-normal-*-13-*-*-*-m-0-fontset-auto2")
+  (set-face-attribute
+   'default t :font "-*-Hack-normal-normal-normal-*-13-*-*-*-m-0-fontset-auto2")
   (set-frame-font "-*-Hack-normal-normal-normal-*-13-*-*-*-m-0-fontset-auto2")
   )
  )
@@ -55,6 +55,10 @@
 
 (setq package-enable-at-startup nil)
 (package-initialize)
+
+;; not packaged up
+(setq load-path (append (list "~/.emacs.d/el") load-path))
+(autoload 'comment-mode "comment-mode" "Comment mode" t)
 
 ;;
 ;; General settings
@@ -142,6 +146,10 @@
 
 ;; c-mode default indent is 4 (what else)
 (setq-default c-basic-offset 4)
+(add-hook 'c-mode-hook
+          '(lambda ()
+             (comment-mode 1) ;; Keir's comment mode
+))
 
 ;; non-standard file associations
 (push '("\\.tex$" . latex-mode) auto-mode-alist)
@@ -256,12 +264,13 @@
 ;; Modeline customisation
 ;;
 (require 'diminish)
-(diminish 'my-keys-minor-mode)
 (diminish 'abbrev-mode "Abv")
+(diminish 'comment-mode)
 (diminish 'dtrt-indent-mode)
 (diminish 'emacs-list-mode "EL")
 (diminish 'flycheck-mode "FC")
 (diminish 'ggtags-mode)
+(diminish 'my-keys-minor-mode)
 (diminish 'sh-mode "sh")
 (diminish 'shell-script-mode "sh")
 
