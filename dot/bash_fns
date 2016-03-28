@@ -3,7 +3,7 @@
 ##
 ## recursive grep through source files
 ##
-function sgrep () {
+function sgrep() {
     find . \( \
          -name "*.[ch]" \
          -or -name "*.cc" -or -name "*.hh" \
@@ -31,7 +31,7 @@ function sgrep () {
 ##
 ## recursive grep through all files
 ##
-function trawl () {
+function trawl() {
     find . -type f -print0 | xargs -0 grep -Ensi --colour "$@"
 }
 
@@ -39,9 +39,26 @@ function trawl () {
 ##
 ## Update brew
 ##
-function brew-up () {
+function brew-up() {
     brew update && brew upgrade && brew cleanup
     brew cask update && brew cask cleanup
+}
+
+##
+## Docker functions
+##
+
+# remove all stopped containers
+function docker-rmas() {
+    docker rm $(docker ps -aq)
+}
+function docker-rmasf() {
+    docker rm -f $(docker ps -aq)
+}
+
+# remove dangling images
+function docker-rmid() {
+    docker rmi $(docker ps --all --quiet)
 }
 
 ##
