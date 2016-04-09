@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 
 # Install my environment
 # Assumes to be run from root directory of the env repository,
