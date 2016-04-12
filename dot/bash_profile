@@ -123,6 +123,8 @@ case $OSNAME in
         [ -e /usr/local/bin/git ] && alias git=/usr/local/bin/git
         # Use emacs app
         alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+        # MacTex (installed from Homebrew)
+        addenv PATH /Library/TeX/texbin
         ;;
     CYGWIN*|MINGW32*|MINGW64*|MSYS*)
         ;;
