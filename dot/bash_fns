@@ -147,7 +147,9 @@ function repo-up () {
 
 
 ##
-## I keep a bunch of read-only repositories under ~/src/repos
+## I keep a bunch of read-only repositories under ~/src/repos and
+## others elsewhere.  These functions help me to keep them in sync
+## with upstream.
 ##
 
 # List repositories (and their source).
@@ -183,10 +185,12 @@ function repos-ls () {
     done
 }
 
-# Update all repositories
+# Update all repositories (optionally in a given directory only)
 function repos-up () {
-    git_repos=`find ~/src/repos/ -type d -name .git`
-    hg_repos=`find ~/src/repos/ -type d -name .hg`
+    dir=~/src/repos/
+    [ "$1" ] && dir=$1
+    git_repos=`find ${dir} -type d -name .git`
+    hg_repos=`find ${dir} -type d -name .hg`
 
     for r in $git_repos; do
         p=`dirname $r`
