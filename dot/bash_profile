@@ -140,36 +140,30 @@ if [ $OSNAME = "Darwin" ]; then
     fi
 fi
 
-# Windows ssh-agent setup (modified from
+# ssh-agent setup for platforms where it is not running (like windows)
+# modified from
 # https://help.github.com/articles/working-with-ssh-key-passphrases/#platform-windows
-case $OSNAME in
-    CYGWIN*|MINGW32*|MINGW64*|MSYS*)
-        ssh_env=~/.ssh/agent.env
+ssh_env=~/.ssh/agent.env
 
-        agent_load_env ()
-        {
-            test -f "$ssh_env" && . "$ssh_env" >| /dev/null
-        }
+ssh_agent_load_env ()
+{
+    test -f "$ssh_env" && . "$ssh_env" >| /dev/null
+}
 
-        agent_start ()
-        {
-            (umask 077; ssh-agent >| "$ssh_env")
-            . "$ssh_env" >| /dev/null
-        }
+ssh_agent_start ()
+{
+    (umask 077; ssh-agent >| "$ssh_env")
+    . "$ssh_env" >| /dev/null
+}
 
-        agent_load_env
-        # agent_run_state: 0=agent running w/ key; 1=agent w/o key;
-        # 2= agent not running
-        agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
+ssh_agent_load_env
+# agent_run_state: 0=agent running w/ key; 1=agent w/o key;
+# 2= agent not running
+agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
 
-        if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
-            agent_load_env
-            agent_start
-        fi
+if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
+    ssh_agent_load_env
+    ssh_agent_start
+fi
 
-        unset ssh_env
-    ;;
-
-    *)
-    ;;
-esac
+unset ssh_env
