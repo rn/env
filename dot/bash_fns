@@ -62,6 +62,22 @@ function docker-rmid() {
 }
 
 ##
+## Misc functions
+##
+
+# download crash report
+function docker-crash() {
+    _plat=$1
+    _id=$2
+    if [ "$_plat" = "win" ]; then
+        p=/mnt/docker-pinata-support/incoming/w1/${_id}/report.zip
+        scp root@s3sync.local:${p} .
+        unzip report.zip
+    fi
+    # TODO Mac
+}
+
+##
 ## Functions do deal with repositories
 ##
 
