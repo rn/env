@@ -1,0 +1,42 @@
+#! /usr/bin/env python
+"""Quick and dirty hack to munge a Docker for Windows log file"""
+
+# add time diff in first column
+# wrap long lines
+
+import datetime
+import subprocess
+import sys
+import textwrap
+
+prev = None
+rows, columns = subprocess.check_output(['stty', 'size']).split()
+wrap = textwrap.TextWrapper(width=int(columns),
+    subsequent_indent="                                                   ")
+f = open(sys.argv[1])
+
+for line in f.readlines():
+    line = line.rstrip('\n')
+    tmp, _, _ = line.partition(']')
+    _, _, ts = tmp.partition('[')
+    try:
+        t = datetime.datetime.strptime(ts, "%H:%M:%S.%f")
+    except:
+        print(line)
+        continue
+
+    if prev:
+        if t < prev:
+            diff = prev - t
+            fmtline = "[-%2d.%03d] %s" % (diff.seconds,
+                                          diff.microseconds / 1000, line)
+        else:
+            diff = t - prev
+            fmtline = "[%3d.%03d] %s" % (diff.seconds,
+                                         diff.microseconds / 1000, line)
+    else:
+        fmtline = "[       ] %s" % (line)
+    print(wrap.fill(fmtline))
+    prev = t
+
+    
