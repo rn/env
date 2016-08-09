@@ -66,15 +66,15 @@ function docker-rmid() {
 ##
 
 # download crash report
-function docker-crash() {
-    _plat=$1
-    _id=$2
-    if [ "$_plat" = "win" ]; then
-        p=/mnt/docker-pinata-support/incoming/w1/${_id}/report.zip
-        scp root@s3sync.local:${p} .
-        unzip report.zip
-    fi
-    # TODO Mac
+function pinata-logs() {
+    pushd ~/src/docker/pinata/support/s3 > /dev/null
+    mkdir -p ~/tmp/logs
+    docker build -t pinata:fetch -f Dockerfile.fetch .
+    docker run -it --rm \
+           -v ~/tmp/logs:/logs  \
+           -v ~/.aws/credentials:/root/.aws/credentials \
+           pinata:fetch $1 $2 $3
+    popd > /dev/null
 }
 
 ##
