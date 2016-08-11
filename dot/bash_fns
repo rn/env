@@ -74,6 +74,9 @@ function pinata-logs() {
            -v ~/tmp/logs:/logs  \
            -v ~/.aws/credentials:/root/.aws/credentials \
            pinata:fetch $1 $2 $3
+    cd ~/tmp/logs/$2/$3
+    unzip *.zip
+    tar xf *.tar
     popd > /dev/null
 }
 
