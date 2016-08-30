@@ -9,7 +9,7 @@ function sgrep() {
          -or -name "*.cc" -or -name "*.cpp" -or -name "*.hh" \
          -or -name "*.cs" \
          -or -name "*.el" \
-         -or -name "*.ml" \
+         -or -name "*.ml" -or -name "*.mli" \
          -or -name "*.ps1" -or -name "*.psm1"\
          -or -name "*.py" \
          -or -name "*.go" \
@@ -67,7 +67,7 @@ function docker-rmid() {
 
 # download crash report
 function pinata-logs() {
-    pushd ~/src/docker/pinata/support/s3 > /dev/null
+    cd ~/src/docker/pinata/support/s3
     mkdir -p ~/tmp/logs
     docker build -t pinata:fetch -f Dockerfile.fetch .
     docker run -it --rm \
@@ -77,7 +77,6 @@ function pinata-logs() {
     cd ~/tmp/logs/$2/$3
     unzip *.zip
     tar xf *.tar
-    popd > /dev/null
 }
 
 ##
