@@ -10,6 +10,7 @@ import sys
 import textwrap
 
 prev = None
+first = None
 rows, columns = subprocess.check_output(['stty', 'size']).split()
 wrap = textwrap.TextWrapper(width=int(columns),
     subsequent_indent="                                                   ")
@@ -25,18 +26,22 @@ for line in f.readlines():
         print(line)
         continue
 
+    if not first:
+        first = t
+
     if prev:
+        abst = t - first
         if t < prev:
             diff = prev - t
-            fmtline = "[-%2d.%03d] %s" % (diff.seconds,
-                                          diff.microseconds / 1000, line)
+            fmtline = "[%3d.%03d][-%2d.%03d] %s" % \
+                      (abst.seconds, abst.microseconds / 1000,
+                       diff.seconds, diff.microseconds / 1000, line)
         else:
             diff = t - prev
-            fmtline = "[%3d.%03d] %s" % (diff.seconds,
-                                         diff.microseconds / 1000, line)
+            fmtline = "[%3d.%03d][%3d.%03d] %s" % \
+                      (abst.seconds, abst.microseconds / 1000,
+                       diff.seconds, diff.microseconds / 1000, line)
     else:
-        fmtline = "[       ] %s" % (line)
+        fmtline = "[ abs   ][ delta ] %s" % (line)
     print(wrap.fill(fmtline))
     prev = t
-
-    

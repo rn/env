@@ -18,7 +18,7 @@
 (cond
  ((string-equal system-type "darwin")
   (set-face-attribute
-   'default t :font " -*-Hack-normal-normal-normal-*-13-*-*-*-m-0-iso10646-1")
+   'default t :font "-*-Hack-normal-normal-normal-*-13-*-*-*-m-0-iso10646-1")
   (set-frame-font "-*-Hack-normal-normal-normal-*-13-*-*-*-m-0-iso10646-1")
   )
  )
