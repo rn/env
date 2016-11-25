@@ -125,6 +125,8 @@ case $OSNAME in
         alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
         # MacTex (installed from Homebrew)
         addenv PATH /Library/TeX/texbin
+        # Python binaries
+        addenv PATH ~/Library/Python/2.7/bin
         ;;
     CYGWIN*|MINGW32*|MINGW64*|MSYS*)
         ;;
