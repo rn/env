@@ -121,8 +121,9 @@ case $OSNAME in
         alias cwd='pwd | tr -d "\r\n" | pbcopy'
         # prefer brew version of git
         [ -e /usr/local/bin/git ] && alias git=/usr/local/bin/git
-        # Use emacs app
-        alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+        # Use emacsclient and create and alias for the real emacs
+        alias remacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+        alias emacs='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -nw'
         # MacTex (installed from Homebrew)
         addenv PATH /Library/TeX/texbin
         # Python binaries
