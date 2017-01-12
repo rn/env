@@ -37,7 +37,8 @@ import time
 import signal
 import errno
 import textwrap
-from scapy.all import conf, sniff, rdpcap, hexdump, Ether, IP, UDP, TCP, GRE
+from scapy.all import conf, sniff, rdpcap, hexdump, Ether, IP, UDP, TCP
+from scapy.all import GRE, VXLAN
 from optparse import OptionParser
 
 # Verbosity level
@@ -98,6 +99,10 @@ def print_pkt(pkt):
     Prints packet content based on verbosity level
     """
     if GRE in pkt:
+        tmp = pkt.copy()
+        inner_raw = tmp.payload.payload.payload.copy()
+        inner_pkt = Ether(str(inner_raw))
+    elif VXLAN in pkt:
         tmp = pkt.copy()
         inner_raw = tmp.payload.payload.payload.copy()
         inner_pkt = Ether(str(inner_raw))
