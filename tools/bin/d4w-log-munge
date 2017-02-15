@@ -20,12 +20,16 @@ for line in f.readlines():
     line = line.rstrip('\n')
     tmp, _, _ = line.partition(']')
     _, _, ts = tmp.partition('[')
+
+    if line.startswith("Version:"):
+        prev = None
+        first = None
     try:
         t = datetime.datetime.strptime(ts, "%H:%M:%S.%f")
     except:
         print(line)
         continue
-
+    
     if not first:
         first = t
 
