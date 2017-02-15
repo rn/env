@@ -137,9 +137,9 @@
     renames = copies
 
 [sendemail]
-    from = Rolf Neugebauer <rolf.neugebauer@gmail.com>
+    from = Rolf Neugebauer <rolf.neugebauer@docker.com>
     smtpserver = smtp.gmail.com
-    smtpuser = rolf.neugebauer@gmail.com
+    smtpuser = rolf.neugebauer@docker.com
     smtpencryption = tls
     chainreplyto = false
     smtpserverport = 587
