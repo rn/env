@@ -1,7 +1,7 @@
 # -*- mode: sh -*-
 
 ##
-## recursive grep through source files
+## recursive grep through selected source files
 ##
 function sgrep() {
     find . \( \
@@ -19,20 +19,29 @@ function sgrep() {
          -or -name "*.uc" \
          \
          -or -name "Make*" -or -name "*.mk" \
+         -or -name "Dockerfile*" \
          \
          -or -name "README*" \
          -or -name "*.tex" -or -name "*.bib" \
          -or -name "*.md" \
          -or -name "*.xml" \
          -or -name "*.html" \
-    \) -print0 | xargs -0 grep -Ensi --colour "$@"
+         \
+         -or -name "*.yml" \
+         -or -name "*.yaml" \
+         \
+         \) -and \( \
+         \-not -path "*vendor*" \
+         \) \
+         -print0 | xargs -0 grep -Ensi --colour "$@"
 }
 
 ##
-## recursive grep through all files
+## recursive grep through all files (except git files)
 ##
 function trawl() {
-    find . -type f -print0 | xargs -0 grep -Ensi --colour "$@"
+    find . -type f -and \( \! -path "*.git*" \) \
+         -print0 | xargs -0 grep -Ensi --colour "$@"
 }
 
 
