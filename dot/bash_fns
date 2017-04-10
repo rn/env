@@ -27,6 +27,7 @@ function sgrep() {
          -or -name "*.xml" \
          -or -name "*.html" \
          \
+         -or -name "*.json" \
          -or -name "*.yml" \
          -or -name "*.yaml" \
          \
