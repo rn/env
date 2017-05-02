@@ -103,8 +103,8 @@
     diff = true
 
 [apply]
-    # Detect whitespace errors when applying a patch
-    #whitespace = fix
+    # XXX This potentially messes with patch files checked in
+    # whitespace = fix
 
 [core]
     pager = less -+$LESS -FRXi
