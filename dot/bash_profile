@@ -26,7 +26,7 @@ export NO_PROMPT_VARS
 PS1SHOST=$SHOST
 case $OSNAME in
     Linux)
-        if [ -d /etc/bash_completion.d/git-prompt ]; then
+        if [ -f /etc/bash_completion.d/git-prompt ]; then
             . /etc/bash_completion.d/git-prompt
         fi
         ;;
@@ -54,7 +54,7 @@ GOLD='\e[38;5;220m'
 # $3 format string for git status
 PROMPT_COMMAND='__git_ps1 \
   "" \
-  "\[$GOLD\]\h\[$COLOR_OFF\]:`echo $PWD | tail -20c`: "\
+  "\[$GOLD\]\h\[$COLOR_OFF\]:`echo $PWD | tail -c 20`: "\
   "[%s]" \
   '
 
