@@ -103,7 +103,6 @@
     diff = true
 
 [apply]
-    # Detect whitespace errors when applying a patch
     # XXX This potentially messes with patch files checked in
     # whitespace = fix
 
