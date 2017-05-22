@@ -1,0 +1,80 @@
+kernel:
+  image: "linuxkit/kernel:4.9.x"
+  cmdline: "console=ttyS0 page_poison=1"
+init:
+  - linuxkit/init:cbd7ae748f0a082516501a3e914fa0c924ee941e
+  - linuxkit/runc:24dfe632ed3ff53a026ee3fac046fd544434e2d6
+  - linuxkit/containerd:f1130450206d4f64f0ddc13d15bb68435aa1ff61
+  - linuxkit/ca-certificates:4e9a83e890e6477dcd25029fc4f1ced61d0642f4
+onboot:
+  - name: sysctl
+    image: "linuxkit/sysctl:225c52c2d6f04a040663bac84cabf81825027f64"
+  - name: format
+    image: "linuxkit/format:d78093e943f9c88386e30c00353f9476d34fb551"
+    binds:
+     - /dev:/dev
+    capabilities:
+     - CAP_SYS_ADMIN
+     - CAP_MKNOD
+  - name: mount
+    image: "linuxkit/mount:fc7164d7c4e1fe5d1da395c7f949fb332cffe752"
+    binds:
+     - /dev:/dev
+     - /var:/var:rshared,rbind
+    capabilities:
+     - CAP_SYS_ADMIN
+    rootfsPropagation: shared
+    command: ["/mount.sh", "/var/lib/docker"]
+  - name: dhcpcd
+    image: "linuxkit/dhcpcd:cb96c09a33c166eca6530f166f0f79927c3e83b0"
+    binds:
+      - /var:/var
+      - /tmp/etc:/etc
+    capabilities:
+      - CAP_NET_ADMIN
+      - CAP_NET_BIND_SERVICE
+      - CAP_NET_RAW
+    net: host
+    command: ["/sbin/dhcpcd", "--nobackground", "-f", "/dhcpcd.conf", "-1"]
+services:
+  - name: rngd
+    image: "linuxkit/rngd:c97ef16be340884a985d8b025983505a9bcc51f0"
+    capabilities:
+     - CAP_SYS_ADMIN
+    oomScoreAdj: -800
+  - name: ntpd
+    image: "linuxkit/openntpd:ad834449a7eaf10dc022b3d8d2ed9faf7ec99d37"
+    capabilities:
+      - CAP_SYS_TIME
+      - CAP_SYS_NICE
+      - CAP_SYS_CHROOT
+      - CAP_SETUID
+      - CAP_SETGID
+    net: host
+  - name: docker
+    image: "linuxkit/docker-ce:261f93927d85001c65e5ce0f421eb6062f09c0a5"
+    capabilities:
+     - all
+    net: host
+    mounts:
+     - type: cgroup
+       options: ["rw","nosuid","noexec","nodev","relatime"]
+    binds:
+     - /var/run/:/var/run/
+     - /var/lib/docker:/var/lib/docker
+     - /lib/modules:/lib/modules
+  - name: devenv
+    image: "rneugeba/devenv:latest"
+    capabilities:
+     - all
+    net: host
+    pid: host
+    binds:
+     - /var/run/:/var/run/
+     - /etc/resolv.conf:/etc/resolv.conf
+trust:
+  image:
+    - linuxkit/kernel
+    - linuxkit/rngd
+outputs:
+  - format: kernel+initrd

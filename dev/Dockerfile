@@ -8,12 +8,14 @@ RUN apk add --no-cache \
     findutils \
     git \
     grep \
+    iputils \
     libarchive-tools \
     make \
     openssh-server \
     pciutils \
     tar \
     sed \
+    shadow \
     tini \
     util-linux \
     vim \
@@ -21,13 +23,6 @@ RUN apk add --no-cache \
 # tweak
 RUN mkdir -p /etc/bash_completion.d \
     && rm /bin/grep
-
-WORKDIR /root
-
-# Environment
-RUN git clone https://github.com/rneugeba/env.git \
-    && cp env/misc/git-prompt.sh /etc/bash_completion.d/git-prompt \
-    && (cd env && ./setup.sh)
 
 # Install the docker CLI
 ENV DOCKER_BUCKET get.docker.com
@@ -49,8 +44,17 @@ RUN set -x \
     && echo "${NOTARY_SHA256} notary" | sha256sum -c - \
     && mv notary /usr/bin
 
+WORKDIR /root
+
+# Environment
+RUN git clone https://github.com/rneugeba/env.git \
+    && cp env/misc/git-prompt.sh /etc/bash_completion.d/git-prompt \
+    && (cd env && ./setup.sh) \
+    && usermod -s /bin/bash root
+
 # setup ssh
 RUN mkdir -p /etc/ssh /root/.ssh && chmod 0700 /root/.ssh
 COPY authorized_keys /root/.ssh/
 COPY ssh.sh /usr/bin/ssh.sh
+COPY sshd_config /etc/ssh/
 CMD ["/sbin/tini", "/usr/bin/ssh.sh"]

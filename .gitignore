@@ -1,2 +1,11 @@
 *~
 dot/emacs.d/auto-save-list/
+*.img
+*.vhdx
+*.tar
+*.gz
+*.qcow2
+*-kernel
+*-cmdline
+*-state
+

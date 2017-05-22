@@ -1,4 +1,4 @@
-.PHONY: build push
+.PHONY: build push clean
 default: push
 
 ORG?=rneugeba
@@ -11,4 +11,8 @@ build:
 
 push: build
 	docker push $(ORG)/$(IMAGE):$(HASH)
-	docker push $(ORG)/$(IMAGE):$(HASH)
+	docker tag $(ORG)/$(IMAGE):$(HASH) $(ORG)/$(IMAGE):latest
+	docker push $(ORG)/$(IMAGE):latest
+
+clean:
+	rm -rf rneugeba-dev-*
