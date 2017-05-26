@@ -24,7 +24,7 @@
     llg = log --all --color-words --graph --stat
 
     # Log with full diff
-    ldiff = log --all -p --color
+    ldiff = log -p --color
 
     # List who commit how often
     who = shortlog --summary --numbered
