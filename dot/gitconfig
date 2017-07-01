@@ -11,8 +11,8 @@
     # Short log (with graph), One line per commit
     l = log --pretty=oneline --graph --abbrev-commit
 
-    # Long log, multiple lines per commit, short SHA
-    ll = log --all --decorate=full --abbrev-commit
+    # Long log, multiple lines per commit, short SHA, stats
+    ll = log --all --decorate=full --abbrev-commit --stat
 
     # Log graph
     lg = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
