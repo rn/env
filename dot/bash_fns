@@ -91,6 +91,7 @@ function docker-tags() {
 # search-and-replace in git repos
 function git-replace() {
     git grep -l "$1" | xargs sed -i -e "s,$1,$2,g"
+    find . -name \*-e | xargs rm
 }
 
 # download crash report
