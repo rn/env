@@ -254,3 +254,33 @@ function repos-up () {
         _repo_hg_up $p
     done
 }
+
+# LinuxKit function to upgrade the Linux kernel invoke with v4.9.11 v4.9.12
+function linuxkit-kern-up() {
+    vcurtag=$1
+    vnewtag=$2
+    vseries=${vcurtag%.*}
+
+    curtag=${vcurtag:1}
+    newtag=${vnewtag:1}
+    series=${vseries:1}
+    
+    k=~/src/linuxkit/linux
+    lk=~/src/linuxkit/linuxkit/kernel
+
+    # Handle LinuxKit update
+    rm "$lk"/patches-"$series".x/* || return
+    (cd "$lk"; git grep -l "$curtag" | xargs sed -i -e "s,$curtag,$newtag,g"; rm *-e)
+
+    # Handle kernel patches
+    pushd "$k" > /dev/null
+ 
+    git checkout "$vcurtag"-linuxkit || return
+    git branch "$vnewtag"-linuxkit "$vcurtag"-linuxkit || return
+    git rebase --onto "$vnewtag" "$vnewtag" "$vnewtag"-linuxkit || return
+
+    git format-patch -o "$lk/patches-$series.x/" "$vnewtag"..HEAD || return
+    git push origin "$vnewtag"-linuxkit || return
+    
+    popd  > /dev/null
+}
