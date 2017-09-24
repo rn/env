@@ -26,6 +26,9 @@
     # Log with full diff
     ldiff = log -p --color
 
+    # Diff for text (ignore whitespaces etc)
+    tdiff = log -p --color --word-diff=color -b -w
+
     # List who commit how often
     who = shortlog --summary --numbered
 
