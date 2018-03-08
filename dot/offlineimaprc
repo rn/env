@@ -37,10 +37,10 @@ localfolders = ~/Mail/Archive
 # Point offline imap at the ca.crt file
 type = IMAP
 sslcacertfile = /usr/local/etc/openssl/certs/rsyn.local.crt
-remotehost = rsyn.local
 remoteuser = rneugeba
-remotepasseval = get_keychain_pass(account="rn@acm.org", server="rsyn.local")
-
+remotehost = rsyn.local
+remotepasseval = get_pass("email/rsyn.local")
+readonly = true
 
 ##
 ## Gmail
@@ -60,10 +60,9 @@ nametrans = gmail_eu_to_remote
 [Repository Gmail-Remote]
 type = Gmail
 remoteuser = rolf.neugebauer@gmail.com
-remotepasseval = get_keychain_pass(
-    account="rolf.neugebauer@gmail.com", server="imap.gmail.com")
+remotepasseval = get_pass("email/gmail-offline-token")
 nametrans = gmail_eu_to_local
-
+readonly = true
 
 ##
 ## Fastmail
@@ -78,11 +77,11 @@ localfolders = ~/Mail/Fastmail
 
 [Repository Fastmail-Remote]
 type = IMAP
-remotehost = mail.messagingengine.com
+remotehost = imap.fastmail.com
 remoteuser = rolf@fastmail.us
-remotepasseval = get_keychain_pass(
-    account="rolf@fastmail.us", server="mail.messagingengine.com")
-
+remotepasseval = get_pass("email/fastmail-offline-token")
+readonly = true
+folderfilter = lambda foldername: foldername not in ['Trash']
 
 ##
 ## Cosini
@@ -102,10 +101,9 @@ nametrans = gmail_us_to_remote
 [Repository Cosini-Remote]
 type = Gmail
 remoteuser = cosini.mail@googlemail.com
-remotepasseval = get_keychain_pass(
-    account="cosini.mail@googlemail.com", server="imap.gmail.com")
+remotepasseval = get_pass("email/cosini-offline-token")
 nametrans = gmail_us_to_local
-
+readonly = true
 
 ##
 ## Hotmail
@@ -130,6 +128,6 @@ nametrans = gmail_eu_to_remote
 [Repository Docker-Remote]
 type = Gmail
 remoteuser = rolf.neugebauer@docker.com
-remotepasseval = get_keychain_pass(
-    account="rolf.neugebauer@docker.com", server="imap.gmail.com")
+remotepasseval = get_pass("email/docker-offline-token")
 nametrans = gmail_eu_to_local
+readonly = true

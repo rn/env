@@ -1,8 +1,6 @@
 #!/usr/bin/python
-
-
-# Copyright (c) 2016 Rolf Neugebauer
-# Copyright (c) 2015 Richard Mortier <mort@cantab.net>
+#
+# Copyright (c) 2016-2018 Rolf Neugebauer
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -18,20 +16,10 @@
 
 import re, subprocess
 
-def get_keychain_pass(account=None, server=None):
-    ## based off from http://stevelosh.com/blog/2012/10/the-homely-mutt/
-    params = {
-        'userid': 'rn',
-        'security': '/usr/bin/security',
-        'command': 'find-internet-password',
-        'account': account,
-        'server': server,
-    }
-    command = "sudo -u %(userid)s %(security)s -v %(command)s -g -a %(account)s -s %(server)s" % params
+def get_pass(account=None):
+    command = "pass %s" % account
     output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
-    outtext = [l for l in output.splitlines() if l.startswith('password: ')][0]
-
-    return re.match(r'password: "(.*)"', outtext).group(1)
+    return output.strip()
 
 ##
 ## Gmail Name matching
