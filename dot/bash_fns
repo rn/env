@@ -284,3 +284,9 @@ function linuxkit-kern-up() {
     
     popd  > /dev/null
 }
+
+# Generate a LinuxKit monthly report
+function linuxkit-report() {
+    month=$1
+    gh-report -token $(pass gh/token) -monthly "$month" linuxkit/linuxkit linuxkit/lcow linuxkit/kubernetes linuxkit/virtsock linuxkit/rtf linuxkit/homebrew-linuxkit moby/tool
+}
