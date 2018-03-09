@@ -37,7 +37,7 @@ localfolders = ~/Mail/Archive
 # Point offline imap at the ca.crt file
 type = IMAP
 sslcacertfile = /usr/local/etc/openssl/certs/rsyn.local.crt
-remoteuser = rn
+remoteuser = rneugeba
 remotehost = rsyn.local
 remotepasseval = get_pass("email/rsyn.local")
 readonly = true
