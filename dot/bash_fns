@@ -96,7 +96,7 @@ function git-replace() {
 
 # download crash report
 function pinata-logs() {
-    cd ~/src/docker/pinata/support/s3
+    cd ~/src/docker/desktop-support/pinata-fetch
     mkdir -p ~/tmp/logs
     docker build -t pinata:fetch -f Dockerfile.fetch .
     docker run -it --rm \
