@@ -290,3 +290,9 @@ function linuxkit-report() {
     month=$1
     gh-report -token $(pass gh/token) -monthly "$month" linuxkit/linuxkit linuxkit/lcow linuxkit/kubernetes linuxkit/virtsock linuxkit/rtf linuxkit/homebrew-linuxkit moby/tool
 }
+
+# Generate weekly report
+function rneugeba-weekly() {
+    week=$1
+    gh-report -token $(pass gh/token) -weekly "$week" -user rn $(pass docker/weekly) > rneugeba.md
+}
