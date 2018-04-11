@@ -65,11 +65,11 @@ for f in ${TOOLS_DIR}/*; do
 done
 
 # Misc
-if [ $OSNAME = "Darwin" ]; then
-    # iterm preferences
-    [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ] && \
-        rm ~/Library/Preferences/com.googlecode.iterm2.plist
-    ln -s ${SOURCE_DIR}/misc/com.googlecode.iterm2.plist ~/Library/Preferences/
-    # Update them
-    defaults read com.googlecode.iterm2
-fi
+# if [ $OSNAME = "Darwin" ]; then
+#     # iterm preferences
+#     [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ] && \
+#         rm ~/Library/Preferences/com.googlecode.iterm2.plist
+#     cp ${SOURCE_DIR}/misc/com.googlecode.iterm2.plist ~/Library/Preferences/
+#     # Update them
+#     defaults read com.googlecode.iterm2
+# fi
