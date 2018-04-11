@@ -296,3 +296,11 @@ function rneugeba-weekly() {
     week=$1
     gh-report -token $(pass gh/token) -weekly "$week" -user rn $(pass docker/weekly) > rneugeba.md
 }
+
+# print colours
+# https://superuser.com/questions/285381
+function colours() {
+    for i in {0..255}; do
+        printf "\x1b[38;5;${i}mcolour${i}\x1b[0m\n"
+    done
+}
