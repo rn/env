@@ -20,4 +20,4 @@ Host github
 # Local hosts
 Host rlin*
      User rn
-     RemoteForward /home/rneugeba/.gnupg/S.gpg-agent.extra ~/.gnupg/S.gpg-agent.ssh
+     RemoteForward /home/rn/.gnupg/S.gpg-agent.extra ~/.gnupg/S.gpg-agent.ssh
