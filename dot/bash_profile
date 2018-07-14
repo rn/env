@@ -90,6 +90,9 @@ addenv MANPATH /usr/local/man
 export GOPATH=~/src/go
 addenv PATH $GOPATH/bin
 
+# Rust
+addenv PATH ~/.cargo/bin
+
 # OPAM configuration
 . ~/.docker-ci-cache/opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
