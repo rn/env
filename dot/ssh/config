@@ -1,22 +1,19 @@
 # General settings
 Host *
      ForwardAgent yes
+     # Forward remote .gnupg/S.gpg-agent.extra to the local gpg-agent socket
+     # RemoteForward /home/rneugeba/.gnupg/S.gpg-agent.extra ~/.gnupg/S.gpg-agent.ssh 
 
 # Source hosts
 Host bitbucket
      ForwardX11 no
      User rneugeba
      HostName bitbucket.org
-     IdentityFile ~/.ssh/bitbucket
+     IdentityFile ~/.ssh/git
 
 Host github
      ForwardX11 no
      User git
      HostName ssh.github.com
-     IdentityFile ~/.ssh/github
-
-# Hosts
-Host rlin00
-     ForwardX11 yes
-     User rneugeba
+     IdentityFile ~/.ssh/git
 
