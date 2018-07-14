@@ -17,3 +17,7 @@ Host github
      HostName ssh.github.com
      IdentityFile ~/.ssh/git
 
+# Local hosts
+Host rlin*
+     User rn
+     RemoteForward /home/rneugeba/.gnupg/S.gpg-agent.extra ~/.gnupg/S.gpg-agent.ssh
