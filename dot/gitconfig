@@ -9,13 +9,13 @@
     ## Log viewing commands
 
     # Short log (with graph), One line per commit linuxish quoting style
-    l = log --pretty=oneline --graph --abbrev-commit --abbrev=12 --pretty=format:'%Cred%h%Creset (\"%s\") %C(yellow)%d%Creset %Cgreen(%cr) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
+    l = log --pretty=oneline --graph --abbrev-commit --abbrev=12 --pretty=format:'%Cred%h%Creset (\"%s\") %C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
 
     # Long log, multiple lines per commit, short SHA, stats
     ll = log --all --decorate=full --abbrev-commit --stat
 
     # Log graph
-    lg = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
+    lg = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
 
     # Another variant
     graph = log --graph --color --pretty=format:"%C(yellow)%H%C(green)%d%C(reset)%n%x20%cd%n%x20%cn%x20(%ce)%n%x20%s%n"
