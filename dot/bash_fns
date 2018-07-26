@@ -94,29 +94,9 @@ function git-replace() {
     find . -name \*-e | xargs rm
 }
 
-# download crash report
-function pinata-logs() {
-    cd ~/src/docker/desktop-support/pinata-fetch
-    mkdir -p ~/tmp/logs
-    docker build -t pinata:fetch -f Dockerfile.fetch .
-    docker run -it --rm \
-           -v ~/tmp/logs:/logs  \
-           -v ~/.aws/credentials:/root/.aws/credentials \
-           pinata:fetch $1 $2 $3
-    cd ~/tmp/logs/$2/$3
-    unzip *.zip
-    tar xf *.tar
-}
-
 ##
 ## Functions do deal with repositories
 ##
-
-# Set docker username/email on a local repository
-function repo-docker() {
-    git config --local user.name "Rolf Neugebauer"
-    git config --local user.email "rolf.neugebauer@docker.com"
-}
 
 # Update gtags if use on a repository
 # must be executed in the root of the repository
@@ -289,12 +269,6 @@ function linuxkit-kern-up() {
 function linuxkit-report() {
     month=$1
     gh-report -token $(pass gh/token) -monthly "$month" linuxkit/linuxkit linuxkit/lcow linuxkit/kubernetes linuxkit/virtsock linuxkit/rtf linuxkit/homebrew-linuxkit moby/tool
-}
-
-# Generate weekly report
-function rneugeba-weekly() {
-    week=$1
-    gh-report -token $(pass gh/token) -weekly "$week" -user rn $(pass docker/weekly) > rneugeba.md
 }
 
 # print colours

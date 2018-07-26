@@ -7,7 +7,7 @@
 ##
 
 [general]
-accounts = Fastmail, Docker, Gmail, Cosini, Archive
+accounts = Fastmail, Gmail, Cosini, Archive
 
 ui = TTYUI
 pythonfile = ~/tools/lib/offlineimap.py
@@ -112,26 +112,3 @@ readonly = true
 ## Hotmail
 ##
 # Todo
-
-##
-## Docker
-##
-[Account Docker]
-localrepository = Docker-Local
-remoterepository = Docker-Remote
-labelsheader = X-Keywords
-synclabels = yes
-ignorelabels = \Important, \Draft
-
-[Repository Docker-Local]
-type = GmailMaildir
-localfolders = ~/Mail/Docker
-nametrans = gmail_eu_to_remote
-
-[Repository Docker-Remote]
-type = Gmail
-cert_fingerprint = BD:94:41:8C:64:D9:B1:43:49:3A:98:68:57:12:51:A3:3C:52:BF:86
-remoteuser = rolf.neugebauer@docker.com
-remotepasseval = get_pass("email/docker-offline-token")
-nametrans = gmail_eu_to_local
-readonly = true
