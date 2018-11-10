@@ -13,8 +13,10 @@ function lncp()
 {
     src=$1
     dst=$2
-    
-    [ -f $dst -o -d $dst -o -L $dst ] && rm -rf $dst
+
+    # Remove old symlinks, copy files/directories
+    [ -L $dst ] && rm $dst
+    [ -f $dst -o -d $dst ] && mv $dst ${dst}.bak
     if [ $OSNAME = "MINGW64_NT-10.0" ]; then
         cp -r $src $dst
     else
@@ -22,14 +24,13 @@ function lncp()
     fi
 }
 
-
 # Dot files
 cd ${SOURCE_DIR}/dot
 DOT_DIR=`pwd`
 for f in ${DOT_DIR}/*; do
     bf=`basename $f`
     case "$bf" in
-        "ssh")
+        "ssh"|"tmux")
             # Skip...handled below
             ;;
         *)
@@ -47,6 +48,15 @@ for f in ${SSH_DIR}/*; do
     lncp $f ~/.ssh/$bf
 done
 
+# Handle tmux files
+cd ${SOURCE_DIR}/dot/tmux
+TMUX_DIR=`pwd`
+mkdir -p ~/.tmux
+for f in ${TMUX_DIR}/*; do
+    bf=`basename $f`
+    lncp $f ~/.tmux/$bf
+done
+
 # Tools
 cd ${SOURCE_DIR}/tools/bin
 TOOLS_DIR=`pwd`
@@ -62,6 +72,14 @@ mkdir -p ~/tools/lib
 for f in ${TOOLS_DIR}/*; do
     bf=`basename $f`
     lncp $f ~/tools/lib/$bf
+done
+
+cd ${SOURCE_DIR}/tools/etc
+TOOLS_DIR=`pwd`
+mkdir -p ~/tools/etc
+for f in ${TOOLS_DIR}/*; do
+    bf=`basename $f`
+    lncp $f ~/tools/etc/$bf
 done
 
 # Misc
