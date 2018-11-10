@@ -94,6 +94,10 @@ addenv PATH $GOPATH/bin
 # Rust
 addenv PATH ~/.cargo/bin
 
+# Python (local easy_install)
+addenv PYTHONPATH ~/.local/lib/python2.7/site-packages
+PATH ~/.local/bin
+
 # History
 command_oriented_history=TRUE
 shopt -s histappend
