@@ -94,9 +94,6 @@ addenv PATH $GOPATH/bin
 # Rust
 addenv PATH ~/.cargo/bin
 
-# OPAM configuration
-. ~/.docker-ci-cache/opam/opam-init/init.sh > /dev/null 2> /dev/null || true
-
 # History
 command_oriented_history=TRUE
 shopt -s histappend
