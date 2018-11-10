@@ -25,20 +25,25 @@ export EDITOR PAGER MANPAGER LESS GCC_COLORS
 # git status, short host name, last 20 characters of PWD
 export NO_PROMPT_VARS
 PS1SHOST=$SHOST
-case $OSNAME in
-    Linux)
-        if [ -f /etc/bash_completion.d/git-prompt ]; then
-            . /etc/bash_completion.d/git-prompt
-        fi
-        ;;
-    Darwin)
-        if [ -d $(brew --prefix)/etc/bash_completion.d ]; then
-            . $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
-        fi
-        ;;
-    CYGWIN*|MINGW32*|MINGW64*|MSYS*)
-        ;;
-esac
+
+if [ -f ~/tools/etc/git-prompt.sh ]; then
+    . ~/tools/etc/git-prompt.sh
+else
+    case $OSNAME in
+        Linux)
+            if [ -f /etc/bash_completion.d/git-prompt ]; then
+                . /etc/bash_completion.d/git-prompt
+            fi
+            ;;
+        Darwin)
+            if [ -d $(brew --prefix)/etc/bash_completion.d ]; then
+                . $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
+            fi
+            ;;
+        CYGWIN*|MINGW32*|MINGW64*|MSYS*)
+            ;;
+    esac
+fi
 
 GIT_PS1_SHOWCOLORHINTS=true
 GIT_PS1_SHOWDIRTYSTATE=true
