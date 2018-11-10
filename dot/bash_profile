@@ -120,6 +120,8 @@ case $OSNAME in
     Linux)
         # copy working directory
         alias cwd='pwd | tr -d "\r\n" | xclip -selection clipboard'
+        alias remacs='emacs'
+        alias emacs='emacsclient -nw'
         ;;
     Darwin)
         # copy working directory
