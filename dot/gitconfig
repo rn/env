@@ -144,15 +144,10 @@
 [diff]
     renames = copies
 
-[sendemail]
-    from = Rolf Neugebauer <rolf.neugebauer@docker.com>
-    smtpserver = smtp.gmail.com
-    smtpuser = rolf.neugebauer@docker.com
-    smtpencryption = tls
-    chainreplyto = false
-    smtpserverport = 587
-
-[filter "lfs"]
-    required = true
-    clean = git-lfs clean -- %f
-    smudge = git-lfs smudge -- %f
+# [sendemail]
+#     from = Rolf Neugebauer <rolf.neugebauer@docker.com>
+#     smtpserver = smtp.gmail.com
+#     smtpuser = rolf.neugebauer@docker.com
+#     smtpencryption = tls
+#     chainreplyto = false
+#     smtpserverport = 587
