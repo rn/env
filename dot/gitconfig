@@ -151,3 +151,7 @@
 #     smtpencryption = tls
 #     chainreplyto = false
 #     smtpserverport = 587
+
+
+[include]
+    path = ~/.gitconfig.work
