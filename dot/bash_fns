@@ -61,11 +61,11 @@ function brew-up() {
 # http://stackoverflow.com/questions/28320134/how-to-list-all-tags-for-a-docker-image-on-a-remote-registry
 function docker-tags() {
     image="$1"
-    tags=`wget -q https://registry.hub.docker.com/v1/repositories/${image}/tags -O -  | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'  | awk -F: '{print $3}'`
+    tags=$(wget -q https://registry.hub.docker.com/v1/repositories/${image}/tags -O -  | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'  | awk -F: '{print $3}')
 
     if [ -n "$2" ]
     then
-        tags=` echo "${tags}" | grep "$2" `
+        tags=$(echo "${tags}" | grep "$2")
     fi
 
     echo "${tags}"
@@ -85,27 +85,22 @@ function git-replace() {
 ## Functions do deal with repositories
 ##
 
-# Update gtags if use on a repository
-# must be executed in the root of the repository
-function _repo_gtags_up() {
-    [ -f GTAGS ] && global -u
-}
+# Update a repository
+# $1: Optional argument for the path (otherwise $PWD)
+function repo-up () {
+    [ -z "$1" ] && r=$(pwd) || r=$1
 
+    # Check if we are in a git directory
+    git_dir=$(git -C $r rev-parse --show-toplevel 2> /dev/null)
+    [ -z "$git_dir" ] && return
 
-# Update a git repository
-# $1: Path to *toplevel* of repository.
-# - Assumes that master branch is clean
-# - Stash any local changes on current branch
-# - If it is a github fork
-#   + pull from upstream
-#   + pull from master
-#   + merge upstream onto master (should be fast-forward)
-#   + push master to github fork
-function _repo_git_up() {
     pushd $1 > /dev/null
-    branch=`git rev-parse --abbrev-ref HEAD`
-    changes=`git diff-index --name-only HEAD --`
-    upstream=`git remote -v | grep upstream`
+
+    branch=$(git rev-parse --abbrev-ref HEAD)
+    changes=$(git diff-index --name-only HEAD --)
+
+    origin=$(git remote -v | grep upstream)
+    upstream=$(git remote -v | grep upstream)
 
     # Stash changes and switch to master
     [ -n "$changes" ] && git stash
@@ -125,21 +120,7 @@ function _repo_git_up() {
     [ ! "$branch" = "master" ] && git checkout $branch
     [ -n "$changes" ] && git stash apply && git stash clear
 
-    # update tags
-    _repo_gtags_up
-
     popd > /dev/null
-}
-
-# Update a repository
-# $1: Optional argument for the path (otherwise $PWD)
-function repo-up () {
-    [ -z "$1" ] && r=`pwd` || r=$1
-
-    git_dir=`git -C $r rev-parse --show-toplevel 2> /dev/null`
-    if [ -n "$git_dir" ]; then
-        _repo_git_up $git_dir
-    fi
 }
 
 
@@ -152,17 +133,17 @@ function repo-up () {
 # List repositories (and their source).
 # If any argument is supplied print out commands to reproduce the setup
 function repos-ls () {
-    git_repos=`find ~/src/repos/ -type d -name .git`
+    git_repos=$(find ~/src/repos/ -type d -name .git)
 
     echo "### Git repositories"
     for r in $git_repos; do
-        p=`dirname $r`
+        p=$(dirname $r)
         b=${p#$HOME/src/repos//}
-        s=`git -C $p remote -v | grep fetch | awk '{print $2}'`
+        s=$(git -C $p remote -v | grep fetch | awk '{print $2}')
         if [ -z "$1" ]; then
             printf "%-25s %s\n" $b $s
         else
-            d=`dirname $b`
+            d=$(dirname $b)
             echo "(mkdir -p $d; cd $d; git clone $s)"
         fi
     done
@@ -177,7 +158,7 @@ function linuxkit-kern-up() {
     curtag=${vcurtag:1}
     newtag=${vnewtag:1}
     series=${vseries:1}
-    
+
     k=~/src/linuxkit/linux
     lk=~/src/linuxkit/linuxkit/kernel
 
@@ -187,14 +168,14 @@ function linuxkit-kern-up() {
 
     # Handle kernel patches
     pushd "$k" > /dev/null
- 
+
     git checkout "$vcurtag"-linuxkit || return
     git branch "$vnewtag"-linuxkit "$vcurtag"-linuxkit || return
     git rebase --onto "$vnewtag" "$vnewtag" "$vnewtag"-linuxkit || return
 
     git format-patch -o "$lk/patches-$series.x/" "$vnewtag"..HEAD || return
     git push origin "$vnewtag"-linuxkit || return
-    
+
     popd  > /dev/null
 }
 
