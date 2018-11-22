@@ -57,19 +57,6 @@ function brew-up() {
 ## Docker functions
 ##
 
-# remove all stopped containers
-function docker-rmas() {
-    docker rm $(docker ps -aq)
-}
-function docker-rmasf() {
-    docker rm -f $(docker ps -aq)
-}
-
-# remove dangling images
-function docker-rmid() {
-    docker rmi $(docker ps --all --quiet)
-}
-
 # List all tags for a image
 # http://stackoverflow.com/questions/28320134/how-to-list-all-tags-for-a-docker-image-on-a-remote-registry
 function docker-tags() {
