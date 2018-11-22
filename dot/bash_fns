@@ -85,7 +85,9 @@ function git-replace() {
 ## Functions do deal with repositories
 ##
 
-# Update a repository
+# Update a GitHub clone
+# Note, this relies 'origin' being my clone and 'upstream'
+# being the upstream. It is also specific to my GitHub ID.
 # $1: Optional argument for the path (otherwise $PWD)
 function repo-up () {
     [ -z "$1" ] && r=$(pwd) || r=$1
@@ -96,10 +98,14 @@ function repo-up () {
 
     pushd $1 > /dev/null
 
+    origin=$(git remote get-url origin 2> /dev/null)
+    if echo "$origin" | grep -qv "github.com:rn"; then
+        echo "Not a GitHub clone. Bailing"
+        return
+    fi
+
     branch=$(git rev-parse --abbrev-ref HEAD)
     changes=$(git diff-index --name-only HEAD --)
-
-    origin=$(git remote -v | grep upstream)
     upstream=$(git remote -v | grep upstream)
 
     # Stash changes and switch to master
