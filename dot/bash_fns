@@ -131,32 +131,14 @@ function _repo_git_up() {
     popd > /dev/null
 }
 
-# Update a Mercurial/hg repository
-# $1: Path to repository
-function _repo_hg_up() {
-    pushd $1 > /dev/null
-
-    # XXX This could be more sophisticated
-    hg pull -u
-
-    # update tags
-    _repo_gtags_up
-
-    popd > /dev/null
-}
-
 # Update a repository
 # $1: Optional argument for the path (otherwise $PWD)
 function repo-up () {
     [ -z "$1" ] && r=`pwd` || r=$1
 
-    # Work out if this is a git or hg repository
     git_dir=`git -C $r rev-parse --show-toplevel 2> /dev/null`
-    hg_dir=`hg --cwd $r root 2> /dev/null`
     if [ -n "$git_dir" ]; then
         _repo_git_up $git_dir
-    elif [ -n "$hg_dir" ]; then
-        _repo_hg_up $hg_dir
     fi
 }
 
@@ -171,7 +153,6 @@ function repo-up () {
 # If any argument is supplied print out commands to reproduce the setup
 function repos-ls () {
     git_repos=`find ~/src/repos/ -type d -name .git`
-    hg_repos=`find ~/src/repos/ -type d -name .hg`
 
     echo "### Git repositories"
     for r in $git_repos; do
@@ -184,41 +165,6 @@ function repos-ls () {
             d=`dirname $b`
             echo "(mkdir -p $d; cd $d; git clone $s)"
         fi
-    done
-
-    echo "### HG repositories"
-    for r in $hg_repos; do
-        p=`dirname $r`
-        b=${p#$HOME/src/repos//}
-        s=`hg -R $p paths default`
-        if [ -z "$1" ]; then
-            printf "%-25s %s\n" $b $s
-        else
-            d=`dirname $b`
-            echo "(mkdir -p $d; cd $d; hg clone $s)"
-        fi
-    done
-}
-
-# Update all repositories (optionally in a given directory only)
-function repos-up () {
-    dir=~/src/repos/
-    [ "$1" ] && dir=$1
-    git_repos=`find ${dir} -type d -name .git`
-    hg_repos=`find ${dir} -type d -name .hg`
-
-    for r in $git_repos; do
-        p=`dirname $r`
-        echo
-        echo "=== Pulling $p"
-        _repo_git_up $p
-    done
-
-    for r in $hg_repos; do
-        p=`dirname $r`
-        echo
-        echo "=== Pulling $p"
-        _repo_hg_up $p
     done
 }
 
