@@ -134,8 +134,13 @@ case $OSNAME in
         # prefer brew version of git
         [ -e /usr/local/bin/git ] && alias git=/usr/local/bin/git
         # Use emacsclient and create and alias for the real emacs
-        alias remacs=/Applications/Emacs.app/Contents/MacOS/Emacs
-        alias emacs='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -nw'
+        if [ -f /Applications/Aquamacs.app/Contents/MacOS/bin/emacs ]; then
+            alias remacs=/Applications/Aquamacs.app/Contents/MacOS/Emacs
+            alias emacs='/Applications/Aquamacs.app/Contents/MacOS/bin/emacsclient -nw'
+        else
+            alias remacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+            alias emacs='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -nw'
+        fi
         # MacTex (installed from Homebrew)
         addenv PATH /Library/TeX/texbin
         # Python binaries
