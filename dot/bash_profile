@@ -135,7 +135,7 @@ case $OSNAME in
         [ -e /usr/local/bin/git ] && alias git=/usr/local/bin/git
         # Use emacsclient and create and alias for the real emacs
         if [ -f /Applications/Aquamacs.app/Contents/MacOS/bin/emacs ]; then
-            alias remacs=/Applications/Aquamacs.app/Contents/MacOS/Emacs
+            alias remacs=/Applications/Aquamacs.app/Contents/MacOS/bin/emacs
             alias emacs='/Applications/Aquamacs.app/Contents/MacOS/bin/emacsclient -nw'
         else
             alias remacs=/Applications/Emacs.app/Contents/MacOS/Emacs
