@@ -187,7 +187,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-x C-z")    'my-suspend-frame)
 (define-key my-keys-minor-mode-map (kbd "C-z")        'nil)
 
-(define-key my-keys-minor-mode-map (kbd "C-x g")      'goto-line)
+(define-key my-keys-minor-mode-map (kbd "C-c g")      'goto-line)
 (define-key my-keys-minor-mode-map (kbd "M-i")        'indent-region)
 (define-key my-keys-minor-mode-map (kbd "M-%")        'query-replace-regexp)
 (define-key my-keys-minor-mode-map (kbd "C-c C-SPC")  'whitespace-cleanup)
