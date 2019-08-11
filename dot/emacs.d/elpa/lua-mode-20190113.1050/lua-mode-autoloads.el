@@ -1,11 +1,11 @@
 ;;; lua-mode-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "lua-mode" "lua-mode.el" (23848 26248 617231
-;;;;;;  832000))
-;;; Generated autoloads from lua-mode.el
+;;;### (autoloads nil "lua-mode" "../../../../../../.emacs.d/elpa/lua-mode-20190113.1050/lua-mode.el"
+;;;;;;  "755a63e2b6f73b590740df05f25e47b5")
+;;; Generated autoloads from ../../../../../../.emacs.d/elpa/lua-mode-20190113.1050/lua-mode.el
 
 (autoload 'lua-mode "lua-mode" "\
 Major mode for editing Lua code.
@@ -27,8 +27,11 @@ When called interactively, switch to the process buffer.
 
 ;;;***
 
-;;;### (autoloads nil nil ("init-tryout.el" "lua-mode-pkg.el") (23848
-;;;;;;  26248 659333 635000))
+;;;### (autoloads nil nil ("../../../../../../.emacs.d/elpa/lua-mode-20190113.1050/init-tryout.el"
+;;;;;;  "../../../../../../.emacs.d/elpa/lua-mode-20190113.1050/lua-mode-autoloads.el"
+;;;;;;  "../../../../../../.emacs.d/elpa/lua-mode-20190113.1050/lua-mode-pkg.el"
+;;;;;;  "../../../../../../.emacs.d/elpa/lua-mode-20190113.1050/lua-mode.el")
+;;;;;;  (23887 60438 657963 54000))
 
 ;;;***
 
