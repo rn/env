@@ -8,8 +8,11 @@
 
     ## Log viewing commands
 
-    # Short log (with graph), One line per commit linuxish quoting style
+    # Short log (with graph)
     l = log --pretty=oneline --graph --abbrev-commit --abbrev=12 --pretty=format:'%Cred%h%Creset (\"%s\") %C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
+
+    # For Linux quoting
+    one = "show -s --pretty='format:%h (\"%s\")'"
 
     # Long log, multiple lines per commit, short SHA, stats
     ll = log --all --decorate=full --abbrev-commit --stat
@@ -45,8 +48,7 @@
 
     ## Status
     s = status -s
-    st = status
-    stat = status
+    st = status --long
 
     ## A alias to help rewrite history
     ## Takes a number <n> as an argument and allows you to re-order
@@ -70,7 +72,6 @@
     br = branch -avv
     co = checkout
 
-
     ## Commit
 
     # Commit all changes
@@ -81,7 +82,6 @@
 
     # Amend the currently staged files to the latest commit
     amend = commit --amend --reuse-message=HEAD
-
 
     ## Pull/Clone
     p = !"git pull; git submodule foreach git pull origin master"
@@ -105,7 +105,6 @@
     # Find commits by commit message
     fm = "!f() { git log --pretty=format:'%C(yellow)%h	%Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
 
-
 [color]
     ui = true
     diff = true
@@ -115,6 +114,9 @@
     # whitespace = fix
 
 [core]
+    # Recommended kernel default. It's amazing how many things this breaks.
+    abbrev = 12
+    
     pager = less -+$LESS -FRXi
 
     # Treat spaces before tabs and all kinds of trailing whitespace as an error
