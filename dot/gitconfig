@@ -3,116 +3,6 @@
     name = Rolf Neugebauer
     email = rn@rneugeba.io
 
-[alias]
-    # Some of these snarfed from jfrazelle and mor1
-
-    ## Log viewing commands
-
-    # Short log (with graph)
-    l = log --pretty=oneline --graph --abbrev-commit --abbrev=12 --pretty=format:'%Cred%h%Creset (\"%s\") %C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
-
-    # For Linux quoting
-    one = "show -s --pretty='format:%h (\"%s\")'"
-
-    # Long log, multiple lines per commit, short SHA, stats
-    ll = log --all --decorate=full --abbrev-commit --stat
-
-    # Log graph
-    lg = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
-
-    # Another variant
-    graph = log --graph --color --pretty=format:"%C(yellow)%H%C(green)%d%C(reset)%n%x20%cd%n%x20%cn%x20(%ce)%n%x20%s%n"
-
-    # Long log graph
-    llg = log --all --color-words --graph --stat
-
-    # Log with full diff
-    ldiff = log -p --color
-
-    # Log with diff for text (ignore whitespaces etc)
-    ltdiff = log -p --color --word-diff=color -b -w
-
-    # Diff for text (ignore whitespaces etc)
-    tdiff = diff --color --word-diff=color -b -w
-
-    # List who commit how often
-    who = shortlog --summary --numbered
-
-    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
-    rev = rev-parse HEAD
-
-    # Show verbose output about tags, branches or remotes
-    tags = tag -l
-    branches = branch -a
-    remotes = remote -v
-
-    ## Status
-    s = status -s
-    st = status --long
-
-    ## A alias to help rewrite history
-    ## Takes a number <n> as an argument and allows you to re-order
-    ## the last <n> commits, moving one to the top, amend and move back.
-    rbi = "!f() { git rebase -i HEAD~$1; }; f"
-
-    ## Changes
-    mdiff = "!f() { git stash | head -1 | grep -q 'No local changes to save'; x=$?; git merge --no-commit $1 &>/dev/null; git add -u &>/dev/null; git diff --staged; git reset --hard &>/dev/null; test $x -ne 0 && git stash pop &>/dev/null; }; f"
-
-    ## Branches
-
-    # Switch to a branch, creating it if necessary
-    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
-
-    # Remove branches that have already been merged with master: delete merged
-    dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
-
-    # Remove a local and remote branch
-    delbr = "!f() { git branch -D $1 && git push origin --delete $1; }; f"
-
-    br = branch -avv
-    co = checkout
-
-    ## Commit
-
-    # Commit all changes
-    ca = !git add -A && git commit -av
-
-    # Commit all changes and sign off
-    cas = !git add -A && git commit -asv
-
-    # Amend the currently staged files to the latest commit
-    amend = commit --amend --reuse-message=HEAD
-
-    ## Pull/Clone
-    p = !"git pull; git submodule foreach git pull origin master"
-    up = !"git pull; git submodule foreach git pull origin master"
-    c = clone --recursive
-
-    # Fetch a PR from github (will be in FETCH_HEAD)
-    getpr = "!f() { git fetch upstream pull/\"$1\"/head; git checkout -b pr\"$1\" FETCH_HEAD; }; f"
-
-    ## Find
-
-    # Find branches containing commit
-    fb = "!f() { git branch -a --contains $1; }; f"
-
-    # Find tags containing commit
-    ft = "!f() { git describe --always --contains $1; }; f"
-
-    # Find commits by source code
-    fc = "!f() { git log --pretty=format:'%C(yellow)%h	%Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
-
-    # Find commits by commit message
-    fm = "!f() { git log --pretty=format:'%C(yellow)%h	%Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
-
-[color]
-    ui = true
-    diff = true
-
-[apply]
-    # XXX This potentially messes with patch files checked in
-    # whitespace = fix
-
 [core]
     # Recommended kernel default. It's amazing how many things this breaks.
     abbrev = 12
@@ -146,6 +36,88 @@
 [diff]
     renames = copies
 
+[alias]
+
+    ## History
+
+    # For Linux quoting
+    one = "show -s --pretty='format:%h (\"%s\")'"
+    # Short log (with graph)
+    l = log --pretty=oneline --graph --abbrev-commit --abbrev=12 --pretty=format:'%Cred%h%Creset (\"%s\") %C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
+    # Long log, multiple lines per commit, short SHA, stats
+    ll = log --all --decorate=full --abbrev-commit --stat
+    # Log graph
+    lg = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
+    # Another variant
+    graph = log --graph --color --pretty=format:"%C(yellow)%H%C(green)%d%C(reset)%n%x20%cd%n%x20%cn%x20(%ce)%n%x20%s%n"
+    # Long log graph
+    llg = log --all --color-words --graph --stat
+    # Log with full diff
+    ldiff = log -p --color
+    # Diff for text (ignore whitespaces etc)
+    tdiff = diff -p --color --word-diff=color -b -w
+
+    # List who commit how often
+    who = shortlog --summary --numbered
+    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+    rev = rev-parse HEAD
+
+    ## Tags, branches, status
+    tags = tag -l
+    remotes = remote -v
+    s = status -s
+    st = status --long
+
+    ## Changes
+    mdiff = "!f() { git stash | head -1 | grep -q 'No local changes to save'; x=$?; git merge --no-commit $1 &>/dev/null; git add -u &>/dev/null; git diff --staged; git reset --hard &>/dev/null; test $x -ne 0 && git stash pop &>/dev/null; }; f"
+
+    ## Branches
+    branches = branch -a
+    br = branch -avv
+    # Switch to a branch, creating it if necessary
+    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+    # Remove branches that have already been merged with master: delete merged
+    dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+    # Remove a local and remote branch
+    delbr = "!f() { git branch -D $1 && git push origin --delete $1; }; f"
+    co = checkout
+
+    ## Commits
+
+    # Commit all changes
+    ca = !git add -A && git commit -av
+    # Commit all changes and sign off
+    cas = !git add -A && git commit -asv
+    # Amend the currently staged files to the latest commit
+    amend = commit --amend --reuse-message=HEAD
+    ## A alias to help rewrite history
+    ## Takes a number <n> as an argument and allows you to re-order
+    ## the last <n> commits, moving one to the top, amend and move back.
+    rbi = "!f() { git rebase -i HEAD~$1; }; f"
+
+    ## Pull/Clone
+    p = !"git pull; git submodule foreach git pull origin master"
+    up = !"git pull; git submodule foreach git pull origin master"
+    c = clone --recursive
+
+    # Fetch a PR from github (will be in FETCH_HEAD)
+    getpr = "!f() { git fetch upstream pull/\"$1\"/head; git checkout -b pr\"$1\" FETCH_HEAD; }; f"
+
+    ## Find
+
+    # Find branches containing commit
+    fb = "!f() { git branch -a --contains $1; }; f"
+    # Find tags containing commit
+    ft = "!f() { git describe --always --contains $1; }; f"
+    # Find commits by source code
+    fc = "!f() { git log --pretty=format:'%C(yellow)%h	%Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
+    # Find commits by commit message
+    fm = "!f() { git log --pretty=format:'%C(yellow)%h	%Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+
+[color]
+    ui = true
+    diff = true
+
 # [sendemail]
 #     from = Rolf Neugebauer <rolf.neugebauer@docker.com>
 #     smtpserver = smtp.gmail.com
@@ -153,7 +125,6 @@
 #     smtpencryption = tls
 #     chainreplyto = false
 #     smtpserverport = 587
-
 
 [include]
     path = ~/.gitconfig.work
