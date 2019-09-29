@@ -4,9 +4,9 @@
     email = rn@rneugeba.io
 
 [core]
-    # Recommended kernel default. It's amazing how many things this breaks.
     abbrev = 12
-    
+    editor = vi
+    excludesfile = ~/.gitignore_global
     pager = less -+$LESS -FRXi
 
     # Treat spaces before tabs and all kinds of trailing whitespace as an error
@@ -19,59 +19,43 @@
     # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
     trustctime = false
 
-    # Force editor to be vi
-    editor = vi
-
-    # Global git ignore
-    excludesfile = ~/.gitignore_global
-
 [push]
     default = tracking
 
 [merge]
     conflictstyle = diff3
-    # Include summaries of merged commits in newly created merge commit messages
     log = true
 
 [diff]
     renames = copies
 
 [alias]
-
-    ## History
-
-    # For Linux quoting
-    one = "show -s --pretty='format:%h (\"%s\")'"
-    # Short log (with graph)
-    l = log --pretty=oneline --graph --abbrev-commit --abbrev=12 --pretty=format:'%Cred%h%Creset (\"%s\") %C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
-    # Long log, multiple lines per commit, short SHA, stats
-    ll = log --all --decorate=full --abbrev-commit --stat
-    # Log graph
-    lg = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
-    # Another variant
+    # History
     graph = log --graph --color --pretty=format:"%C(yellow)%H%C(green)%d%C(reset)%n%x20%cd%n%x20%cn%x20(%ce)%n%x20%s%n"
-    # Long log graph
+    l = log --abbrev-commit --pretty=oneline --graph --pretty=format:'%Cred%h%Creset (\"%s\") %C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an (%G?)>%Creset'
+    lg = log --abbrev-commit --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an (%G?)>%Creset'
+    ll = log --abbrev-commit --all --decorate=full --stat
     llg = log --all --color-words --graph --stat
-    # Log with full diff
-    ldiff = log -p --color
-    # Diff for text (ignore whitespaces etc)
-    tdiff = diff -p --color --word-diff=color -b -w
-
-    # List who commit how often
-    who = shortlog --summary --numbered
-    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+    lr = log --all --graph --decorate --oneline --simplify-by-decoration --no-merges       # Show tags/branches
+    one = "show -s --pretty='format:%h (\"%s\")'"                                          # For quoting commit Linux style
     rev = rev-parse HEAD
 
-    ## Tags, branches, status
+    # Diffs
+    # 'ldiff' shows the log with diffs
+    # 'tdiff' does the same but for text
+    diff-stat = diff -b --stat
+    ds = diff --stat=160,120
+    ldiff = log -p --color
+    mdiff = "!f() { git stash | head -1 | grep -q 'No local changes to save'; x=$?; git merge --no-commit $1 &>/dev/null; git add -u &>/dev/null; git diff --staged; git reset --hard &>/dev/null; test $x -ne 0 && git stash pop &>/dev/null; }; f"
+    tdiff = diff -p --color --word-diff=color -b -w
+
+    # Tags, remotes, status
     tags = tag -l
     remotes = remote -v
     s = status -s
     st = status --long
 
-    ## Changes
-    mdiff = "!f() { git stash | head -1 | grep -q 'No local changes to save'; x=$?; git merge --no-commit $1 &>/dev/null; git add -u &>/dev/null; git diff --staged; git reset --hard &>/dev/null; test $x -ne 0 && git stash pop &>/dev/null; }; f"
-
-    ## Branches
+    # Branches
     branches = branch -a
     br = branch -avv
     # Switch to a branch, creating it if necessary
@@ -82,49 +66,44 @@
     delbr = "!f() { git branch -D $1 && git push origin --delete $1; }; f"
     co = checkout
 
-    ## Commits
-
-    # Commit all changes
-    ca = !git add -A && git commit -av
-    # Commit all changes and sign off
-    cas = !git add -A && git commit -asv
-    # Amend the currently staged files to the latest commit
-    amend = commit --amend --reuse-message=HEAD
-    ## A alias to help rewrite history
-    ## Takes a number <n> as an argument and allows you to re-order
-    ## the last <n> commits, moving one to the top, amend and move back.
+    # Commits
+    commit = commit -v
+    ca = !git add -A && git commit -av           # Commit all changes
+    cas = !git add -A && git commit -asv         # Commit all changes and sign-off
+    amend = commit --amend --reuse-message=HEAD  # Amend last commit
+    # A alias to help rewrite history
+    # Takes a number <n> as an argument and allows you to re-order
+    # the last <n> commits, moving one to the top, amend and move back.
     rbi = "!f() { git rebase -i HEAD~$1; }; f"
+    unstage = reset HEAD --
 
-    ## Pull/Clone
+    # Pull/Clone
     p = !"git pull; git submodule foreach git pull origin master"
     up = !"git pull; git submodule foreach git pull origin master"
     c = clone --recursive
 
-    # Fetch a PR from github (will be in FETCH_HEAD)
-    getpr = "!f() { git fetch upstream pull/\"$1\"/head; git checkout -b pr\"$1\" FETCH_HEAD; }; f"
-
-    ## Find
-
-    # Find branches containing commit
-    fb = "!f() { git branch -a --contains $1; }; f"
-    # Find tags containing commit
-    ft = "!f() { git describe --always --contains $1; }; f"
+    # Find
+    fb = "!f() { git branch -a --contains $1; }; f"         # Find branches containing commit
+    ft = "!f() { git describe --always --contains $1; }; f" # Find tags containing commit
     # Find commits by source code
     fc = "!f() { git log --pretty=format:'%C(yellow)%h	%Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
     # Find commits by commit message
     fm = "!f() { git log --pretty=format:'%C(yellow)%h	%Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
 
+    # History of who commited how often
+    credits = shortlog --summary --numbered
+    # Fetch a PR from github (will be in FETCH_HEAD)
+    getpr = "!f() { git fetch upstream pull/\"$1\"/head; git checkout -b pr\"$1\" FETCH_HEAD; }; f"
+    # Describe an object
+    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+    # Show files which are ignored
+    ignored = !git ls-files -v | grep '^[[:lower:]]' | awk '{print $2}'
+    # Generate patch file from a commit.
+    patch = log -p --no-walk
+
 [color]
     ui = true
     diff = true
-
-# [sendemail]
-#     from = Rolf Neugebauer <rolf.neugebauer@docker.com>
-#     smtpserver = smtp.gmail.com
-#     smtpuser = rolf.neugebauer@docker.com
-#     smtpencryption = tls
-#     chainreplyto = false
-#     smtpserverport = 587
 
 [include]
     path = ~/.gitconfig.work
