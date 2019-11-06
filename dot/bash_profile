@@ -100,8 +100,8 @@ addenv PATH $GOPATH/bin
 addenv PATH ~/.cargo/bin
 
 # Python (local easy_install)
-addenv PYTHONPATH ~/.local/lib/python2.7/site-packages
-addenv PATH ~/.local/bin
+# addenv PYTHONPATH ~/.local/lib/python2.7/site-packages
+# addenv PATH ~/.local/bin
 
 # History
 command_oriented_history=TRUE
