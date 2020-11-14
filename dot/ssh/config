@@ -17,6 +17,17 @@ Host github
      HostName ssh.github.com
      IdentityFile ~/.ssh/git
 
+# LinuxKit hosts
+Host lk-s390x
+     ForwardX11 no
+     User rneugeba
+     HostName 148.100.113.92
+
+Host lk-arm64
+     ForwardX11 no
+     User rneugeba
+     HostName 147.75.196.138
+
 # Local hosts
 Host rlin*
      User rn
