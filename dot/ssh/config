@@ -28,6 +28,11 @@ Host lk-arm64
      User rneugeba
      HostName 147.75.196.138
 
+Host lk-amd64
+     ForwardX11 no
+     User rneugeba
+     HostName 145.40.80.219
+
 # Local hosts
 Host rlin*
      User rn
