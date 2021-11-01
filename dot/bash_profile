@@ -129,6 +129,11 @@ case $OSNAME in
         alias emacs='emacsclient -nw'
         ;;
     Darwin)
+        if [ -d /opt/homebrew/bin ]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        else
+            eval "$(brew shellenv)"
+        fi
         # copy working directory
         alias cwd='pwd | tr -d "\r\n" | pbcopy'
         # prefer brew version of git
