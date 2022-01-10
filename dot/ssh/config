@@ -26,7 +26,13 @@ Host lk-s390x
 Host lk-arm64
      ForwardX11 no
      User rneugeba
-     HostName 147.75.196.138
+     HostName 147.75.55.103
+     # HostName 147.75.196.138
+
+Host lk-amd64
+     ForwardX11 no
+     User rneugeba
+     HostName 145.40.80.219
 
 # Local hosts
 Host rlin*
