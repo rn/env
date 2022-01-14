@@ -70,6 +70,12 @@ addenv () {
     export ${1}
 }
 
+# Add an element to the front of an environment variable
+addenv_front () {
+    eval ${1}="$2":$(echo $(eval echo "$\{$1\}"))
+    export ${1}
+}
+
 # Build path from scratch (except on Windows...which is different)
 case $OSNAME in
     CYGWIN*|MINGW32*|MINGW64*|MSYS*)
