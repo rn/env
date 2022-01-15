@@ -31,6 +31,8 @@ remoterepository = Archive-Remote
 [Repository Archive-Local]
 type = GmailMaildir
 localfolders = ~/Mail/Archive
+utime_from_header = yes
+filename_use_mail_timestamp = yes
 
 [Repository Archive-Remote]
 # Create a self-signed cert using the UI for rsyn.local and export it
