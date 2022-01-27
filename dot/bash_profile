@@ -103,7 +103,7 @@ export GOPATH=~/src/go
 addenv PATH $GOPATH/bin
 
 # Rust
-addenv PATH ~/.cargo/bin
+[ -d "$HOME/.cargo" ] && source "$HOME/.cargo/env"
 
 # Python (local easy_install)
 # addenv PYTHONPATH ~/.local/lib/python2.7/site-packages
