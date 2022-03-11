@@ -91,6 +91,7 @@ addenv PATH ~/tools/bin
 addenv PATH /usr/local/sbin
 addenv PATH /usr/local/bin
 addenv PATH /usr/local/go/bin
+addenv PATH ~/.local/bin
 
 # Build manpath
 unset MANPATH
