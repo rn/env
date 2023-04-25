@@ -7,7 +7,7 @@
     abbrev = 12
     editor = vi
     excludesfile = ~/.gitignore_global
-    pager = diff-highlight | less -+$LESS -FRXi -S
+    pager = diffr | less -+$LESS -FRXi -S
 
     # Treat spaces before tabs and all kinds of trailing whitespace as an error
     # [default] trailing-space: looks for spaces at the end of a line
