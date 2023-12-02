@@ -54,7 +54,7 @@
      ))
 
 (setq package-enable-at-startup nil)
-(package-initialize)
+;;(package-initialize)
 
 ;; not packaged up
 (setq load-path (append (list "~/.emacs.d/el") load-path))
@@ -74,7 +74,7 @@
 (dtrt-indent-mode 1)                 ;; detect tabs/spaces automatically
 ;; default save encoding: utf-8
 (set-language-environment "utf-8")
-(set-coding-priority (list 'coding-category-utf-8))
+;;(set-coding-priority (list 'coding-category-utf-8))
 (prefer-coding-system 'utf-8)
 
 ;; ispell
