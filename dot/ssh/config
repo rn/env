@@ -4,6 +4,9 @@ Host *
      # Forward remote .gnupg/S.gpg-agent.extra to the local gpg-agent socket
      # RemoteForward /home/rneugeba/.gnupg/S.gpg-agent.extra ~/.gnupg/S.gpg-agent.ssh 
 
+Host 10.0.1.20
+     KexAlgorithms +diffie-hellman-group-exchange-sha1
+
 # Source hosts
 Host bitbucket
      ForwardX11 no
