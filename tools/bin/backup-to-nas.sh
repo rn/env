@@ -13,16 +13,23 @@ fi
 mkdir -p ${LD}
 {
     echo "=== rsync docs"
-    rsync ${DRY} -av --delete ~/Desktop/docs/ qnas:/share/rn/docs/
+    rsync ${DRY} -av --delete \
+          --exclude=.DS_Store \
+          ~/Desktop/docs/ qnas:/share/rn/docs/
 
     echo "\n=== rsync music"
-    rsync ${DRY} -av --delete ~/m/ qnas:/share/rn/music/
+    rsync ${DRY} -av --delete \
+          --exclude=.DS_Store \
+          ~/m/ qnas:/share/rn/music/
 
     echo "\n=== rsync misc"
-    rsync ${DRY} -av --delete ~/misc/ qnas:/share/rn/misc/
+    rsync ${DRY} -av --delete \
+          --exclude=.DS_Store \
+          ~/misc/ qnas:/share/rn/misc/
 
     echo "\n=== rsync photos"
     rsync ${DRY} -av --delete \
+          --exclude=.DS_Store \
           --exclude=Lightroom/Lightroom\ Catalog\ Previews.lrdata \
           --exclude=Lightroom/Lightroom\ 5\ Catalog\ Previews.lrdata \
           --exclude=Lightroom/Lightroom\ Catalog-v13\ Previews.lrdata \
