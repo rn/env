@@ -87,6 +87,7 @@ case $OSNAME in
         PATH=/sbin
         ;;
 esac
+
 addenv PATH /bin
 addenv PATH /usr/sbin
 addenv PATH /usr/bin
@@ -108,6 +109,9 @@ addenv PATH $GOPATH/bin
 
 # Rust
 [ -d "$HOME/.cargo" ] && source "$HOME/.cargo/env"
+
+# qnap entware setup
+[ -f /opt/etc/profile ] && source /opt/etc/profile
 
 # Python (local easy_install)
 # addenv PYTHONPATH ~/.local/lib/python2.7/site-packages
