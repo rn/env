@@ -1,2 +1,0 @@
-;; Generated package description from geiser-kawa.el  -*- no-byte-compile: t -*-
-(define-package "geiser-kawa" "0.0.1" "Kawa scheme support for Geiser" '((emacs "26.1") (geiser "0.16")) :keywords '("languages" "kawa" "scheme" "geiser") :authors '(("spellcard199" . "spellcard199@protonmail.com")) :maintainer '("spellcard199" . "spellcard199@protonmail.com") :url "https://gitlab.com/emacs-geiser/kawa")
