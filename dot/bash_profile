@@ -92,6 +92,7 @@ addenv PATH /bin
 addenv PATH /usr/sbin
 addenv PATH /usr/bin
 addenv PATH ~/tools/bin
+addenv PATH /opt/homebrew/bin
 addenv PATH /usr/local/sbin
 addenv PATH /usr/local/bin
 addenv PATH /usr/local/go/bin
@@ -152,8 +153,12 @@ case $OSNAME in
         alias cwd='pwd | tr -d "\r\n" | pbcopy'
         # prefer brew version of git
         [ -e /usr/local/bin/git ] && alias git=/usr/local/bin/git
+
         # Use emacsclient and create and alias for the real emacs
-        if [ -f /usr/local/bin/emacs ]; then
+        if [ -f /opt/homebrew/bin/emacs ]; then
+            alias remacs=/opt/homebrew/bin/emacs
+            alias emacs='/opt/homebrew/bin/emacs -nw'
+        elif [ -f /usr/local/bin/emacs ]; then
             alias remacs=/usr/local/bin/emacs
             alias emacs='/usr/local/bin/emacs -nw'
         elif [ -f /Applications/Aquamacs.app/Contents/MacOS/bin/emacs ]; then
@@ -165,8 +170,6 @@ case $OSNAME in
         fi
         # MacTex (installed from Homebrew)
         addenv PATH /Library/TeX/texbin
-        # Python binaries
-        addenv PATH ~/Library/Python/2.7/bin
         ;;
     CYGWIN*|MINGW32*|MINGW64*|MSYS*)
         ;;
