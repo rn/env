@@ -77,13 +77,13 @@
 ;;(set-coding-priority (list 'coding-category-utf-8))
 (prefer-coding-system 'utf-8)
 
-;; ispell
+;; ispell. rewrite with file-exists-p
 (cond
    ((string-equal system-type "gnu/linux")
     (setq-default ispell-program-name "/usr/bin/aspell")
     )
    ((string-equal system-type "darwin")
-    (setq-default ispell-program-name "/usr/local/bin/aspell")
+    (setq-default ispell-program-name "/opt/homebrew/bin/aspell")
     )
    )
 (setq ispell-dictionary "british")
