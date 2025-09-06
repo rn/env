@@ -157,10 +157,10 @@ case $OSNAME in
         # Use emacsclient and create and alias for the real emacs
         if [ -f /opt/homebrew/bin/emacs ]; then
             alias remacs=/opt/homebrew/bin/emacs
-            alias emacs='/opt/homebrew/bin/emacs -nw'
+            alias emacs='/opt/homebrew/bin/emacsclient -nw'
         elif [ -f /usr/local/bin/emacs ]; then
             alias remacs=/usr/local/bin/emacs
-            alias emacs='/usr/local/bin/emacs -nw'
+            alias emacs='/usr/local/bin/emacsclient -nw'
         elif [ -f /Applications/Aquamacs.app/Contents/MacOS/bin/emacs ]; then
             alias remacs=/Applications/Aquamacs.app/Contents/MacOS/bin/emacs
             alias emacs='/Applications/Aquamacs.app/Contents/MacOS/bin/emacsclient -nw'
